@@ -37,7 +37,7 @@
 
             var tmp = document.getElementById("text1").value;
 
-            alert("Meow")
+            // alert("Meow")
             if(document.getElementById("text1").value.length == 0)
             {
                 document.getElementById("text1").value = "Oops, blank input...";
@@ -48,6 +48,23 @@
                 button.classList.add('btn');
                 button.textContent = tmp;
                 buttonClass.appendChild(button);
+
+                $.ajax
+                ({
+                    type: "POST",
+                    url: 'http://127.0.0.1:8000/add/',
+                    contentType:"application/json; charset=utf-8",
+                    headers: {"Access-Control-Allow-Origin":"*"},
+                    dataType: 'json',
+
+                    async: false,
+                    data: '{"name": "' + document.getElementById("text1").value + '", "url" : "' + document.getElementById("text1").value + '", "active" : "true"}',
+                    success: function () {
+
+                        alert("Thanks!");
+                    }
+                })
+
             }
 
         }
