@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- force IE browsers in compatibility mode to use their most aggressive rendering engine -->
+
+    <meta charset="UTF-8">
+    <title>hORIzON Status </title>
+    <meta name="description" content="Welcome to hORIzOn Team Web App&#39;s home for real-time and historical monitoring data.">
+
+    <!-- Mobile viewport optimization h5bp.com/ad -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!-- Time this page was rendered - http://purl.org/dc/terms/issued -->
+    <meta name="issued" content="1649098902">
+
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <meta http-equiv="cleartype" content="on">
+
+
+    <link rel="shortcut icon" type="image/x-icon" href="logo-ico.ico" />
+
+    <link rel="shortcut icon" href='logo-ico.ico'>
+
+    <script>
+        function showAddMenu() {
+
+            document.getElementById("text1").style.visibility = "visible";
+
+            document.getElementById("pushMe2").style.visibility = "visible";
+
+        }
+
+        function addService() {
+
+            var tmp = document.getElementById("text1").value;
+
+            alert("Meow")
+            if(document.getElementById("text1").value.length == 0)
+            {
+                document.getElementById("text1").value = "Oops, blank input...";
+                alert("Поле пустое - пожалуйста, введите ссылку на cервис")
+            } else {
+                let buttonClass = document.createElement('div')
+                const button = document.createElement('button');
+                button.classList.add('btn');
+                button.textContent = tmp;
+                buttonClass.appendChild(button);
+            }
+
+        }
+    </script>
+
+    <style>
+        .wrapper {
+            display: flex;
+        }
+        .services {
+            float: left;
+            width: 30%;
+            height: 100%;
+        }
+        .container {
+            float:right;
+            width: 70%;
+            height: 100%;
+        }
+    </style>
+
+    <!-- custom css -->
+    <link rel="stylesheet" type="text/css" href="external20211005-40-12abxbc.css">
+
+</head>
+<body>
+<div class="layout-content status status-index starter">
+    <div class="masthead-container basic">
+
+        <div class="masthead has-logo">
+            <div class="logo-container">
+                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="logo-full.png" width="600"/></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- this is outside of the .container so that the cover photo can go full width on mobile -->
+    <div class="wrapper">
+        <div class="services" style="margin-left:50px;margin-right:25px; ">
+            <div class="page-status status-none">
+          <span class="status font-large">
+            Service List
+          </span>
+
+            </div>
+
+            <div class="menu-container" id="menu-container">
+                <input id="pushMe" type="button" value="Add New Service" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" >
+                <div class="timeframes-container">
+                    <div class="service-field" style="width:100%;visibility:hidden;">
+                        <input id="text1" type="text" style="width:100%; " placeholder="Input a link to the service (e.g. https://www.google.com/)">
+                    </div>
+                    <!-- <a href="#" class="timeframe color-secondary font-regular border-color" data-js-hook="data-time-period-toggle" data-time-period="month">Add New Service</a>-->
+                    <input id="pushMe2" type="button" value="Add" style="width:100%;color:white;background-color:#4c9aff;visibility:hidden;" onclick="addService()">
+                </div>
+                <div class="metrics-container">
+                    <div class="metric border-color">
+                        <div class="metric-meta font-large">
+                            <div class="metric-name color-primary">
+                                .....................
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="margin-right:50px;">
+
+    </div>
+
+
+</div>
+</body>
+</html>
