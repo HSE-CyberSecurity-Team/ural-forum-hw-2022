@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -8,6 +8,8 @@ import motor.motor_asyncio
 from fastapi_utils.tasks import repeat_every
 import requests as rq
 from pydantic import BaseModel
+from pathlib import Path
+
 
 class Service(BaseModel):
     name: str
@@ -34,7 +36,11 @@ def deleteFromDb(app_id):
     return True
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=Path(__file__).parent.absolute() / "static"),
+    name="static",
+)
 templates = Jinja2Templates(directory="static/templates")
 
 
@@ -82,13 +88,32 @@ async def get_item(app_id: str, q: Optional[str] = None):
 
     return new_json
 
-@app.post("/add/")
+@app.options("/add")
+async def add_item_cors_shit(response: Response):
+    response
+    response.headers["Content-type"] ="application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    # response.__setitem__("Access-Control-Allow-Origin", "*")
+    return {"status" : "success"}
+
+@app.options("/app_lists")
+async def add_item_cors_shit(response: Response):
+    response
+    response.headers["Content-type"] ="application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    # response.__setitem__("Access-Control-Allow-Origin", "*")
+    return {"status" : "success"}
+
+@app.post("/add")
 async def add_item(service: Service):
     db = client['ural_data']
     collection = db['apps']
     # service["active"] = True
     # d = dict(service)
     # return await collection.count_documents({"name": service.name})
+    # return service.__dict__
     if await collection.count_documents({"name": service.name}) == 0:
         collection.insert_one(service.__dict__)
         return service.__dict__
@@ -125,14 +150,16 @@ async def get_statuses() -> None:
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
     return
 
-# @app.get("/do_crone")  # 1 hour
-# async def get_statuses() -> None:
-#     db = client['ural_data']
-#     collection_apps = db['apps']
-#     dummy_list = []
-#     async for doc in collection_apps.find({}, {'_id': 0}):
-#         collection_app = db[doc['name']]
-#         if doc["active"] == "True":
-#             response = rq.get(doc['url'])
-#             collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
-#     return
+
+
+@app.get("/do_crone")  # 1 hour
+async def get_statuses() -> None:
+    db = client['ural_data']
+    collection_apps = db['apps']
+    dummy_list = []
+    async for doc in collection_apps.find({}, {'_id': 0}):
+        collection_app = db[doc['name']]
+        if doc["active"] == "True":
+            response = rq.get(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
+    return
