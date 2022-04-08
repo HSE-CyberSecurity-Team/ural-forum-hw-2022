@@ -1,82 +1,165 @@
-# This is a sample Python script.
-import sys
+from typing import Optional
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import time
+import motor.motor_asyncio
+from fastapi_utils.tasks import repeat_every
 import requests as rq
-
-from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QListWidget, QGridLayout, QLabel, QLineEdit, QMessageBox
-from PyQt5.QtCore import QTimer
-
-from smtplib import SMTP
-from pymongo import MongoClient
+from pydantic import BaseModel
+from pathlib import Path
 
 
-class TimerUtility(QWidget):
-    def __init__(self, parent=None):
-        super(TimerUtility, self).__init__(parent)
-        self.setWindowTitle("test test")
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.DoRequest)
+class Service(BaseModel):
+    name: str
+    url: str
+    active: bool
 
-        self.s = rq.session()
-        self.db_client = MongoClient('localhost', 27017)
-        self.db = self.db_client.statuses
-        self.coll = self.db.collection1
-        self.ids = []
-        layout = QGridLayout()
-        self.lineEdit1 = QLineEdit()
-        self.infoText1 = QLabel()
 
-        self.buttonStart = QPushButton()
-        self.buttonStart.setText("Start")
+client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
 
-        self.buttonStop = QPushButton()
-        self.buttonStop.setText("Stop")
+def day_ago(days_ago):
+    now = time.time()
+    day_start = now - (now % 86400)
+    # yday = time.localtime(day_start - 86400 * days_ago)  # seconds/day
+    # start = time.struct_time((yday.tm_year, yday.tm_mon, yday.tm_mday, 0, 0, 0, 0, 0, yday.tm_isdst))
+    # today = time.localtime(now)
+    # end = time.struct_time((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, today.tm_isdst))
+    return day_start - 86400 * days_ago
 
-        self.buttonStart.clicked.connect(self.start)
-        self.buttonStop.clicked.connect(self.stop)
 
-        layout.addWidget(self.lineEdit1)
-        layout.addWidget(self.buttonStart)
-        layout.addWidget(self.buttonStop)
-        layout.addWidget(self.infoText1)
-        self.setLayout(layout)
+def addToDb(app_id):
+    return True
 
-    def start(self):
-        self.url = self.lineEdit1.text()
-        if self.lineEdit1.text() == '':
-            QMessageBox.about(self, "Ooops", "Вы не указали ссылку на сервис")
+def deleteFromDb(app_id):
+    return True
+
+app = FastAPI()
+app.mount(
+    "/static",
+    StaticFiles(directory=Path(__file__).parent.absolute() / "static"),
+    name="static",
+)
+templates = Jinja2Templates(directory="static/templates")
+
+
+@app.get("/")
+def read_root(request: Request):
+    return templates.TemplateResponse("index.html", context={'request': request})
+
+
+@app.get("/app_lists")
+async def app_lists():
+    db = client['ural_data']
+    collection = db['apps']
+    dummy_list = []
+    async for doc in collection.find({}, {'_id': 0}):
+        dummy_list.append(doc)
+    return dummy_list
+
+
+@app.get("/health/{app_id}")
+async def get_item(app_id: str, q: Optional[str] = None):
+    dummy_json = {1649099304: 100, 1649099204: 80, 1649099104: 110, 1649099004: 150, 1649098904: 200, 1649098804: 120}
+
+    db = client['ural_data']
+    collection = db[app_id]
+    dummy_list = []
+    temp = 0
+    amount = 0
+    async for doc in collection.find({}, {'_id': 0}):
+        dummy_list.append(doc)
+
+    # return dummy_list
+
+    new_json = dict()
+    for i in range(10):
+        for j in dummy_list:
+            temp = 0
+            amount = 0
+            if j['timestamp'] > day_ago(i) and j['timestamp'] < day_ago(i) + 86400:
+                temp += j['response_time']
+                amount += 1
+        if amount != 0:
+            new_json[i] = temp / amount
         else:
-            self.timer.start(1000)
+            new_json[i] = -1
 
-    def stop(self):
-        self.timer.stop()
+    return new_json
 
-    def DoRequest(self):
-        resp = self.s.get(self.url)
-        record = {"url": self.url, "status": resp.status_code}
-        self.ids.append(self.coll.insert_one(record))
+@app.options("/add")
+async def add_item_cors_shit(response: Response):
+    response
+    response.headers["Content-type"] ="application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    # response.__setitem__("Access-Control-Allow-Origin", "*")
+    return {"status" : "success"}
 
-    def get_site_status(self):
-        try:
-            response = self.s.get(self.url)
-            if getattr(response, 'status') == 200:
-                return 'ok'
-        except AttributeError:
-            pass
-        return 'smth else'
+@app.options("/app_lists")
+async def add_item_cors_shit(response: Response):
+    response
+    response.headers["Content-type"] ="application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    # response.__setitem__("Access-Control-Allow-Origin", "*")
+    return {"status" : "success"}
 
-    def email_alert(message, status):
-        fromaddr = 'you@gmail.com'
-        toaddrs = 'yourphone@txt.att.net'
+@app.post("/add")
+async def add_item(service: Service):
+    db = client['ural_data']
+    collection = db['apps']
+    # service["active"] = True
+    # d = dict(service)
+    # return await collection.count_documents({"name": service.name})
+    # return service.__dict__
+    if await collection.count_documents({"name": service.name}) == 0:
+        collection.insert_one(service.__dict__)
+        return service.__dict__
+    else:
+        return "app already exists"
 
-        server = SMTP('smtp.gmail.com:587')
-        server.starttls()
-        server.login('you', 'password')
-        server.sendmail(fromaddr, toaddrs, 'Subject: %s\r\n%s' % (status, message))
-        server.quit()
+@app.delete("/health/{app_id}")
+async def delete_item(app_id: str, q: Optional[str] = None):
+    # delete items from db
+    db = client['ural_data']
+    collection = db['apps']
+    collection.update_one({"name": app_id}, {"$set": {"active": False}})
+    return True
+
+@app.patch("/health/{app_id}")
+def replace_item(old_app_id: str, new_app_id: str):
+    # delete items from db
+    deleteFromDb(old_app_id)
+    addToDb(new_app_id)
+
+    return True
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    daemon = TimerUtility()
-    daemon.show()
-    sys.exit(app.exec_())
+@app.on_event("startup")
+@repeat_every(seconds=60*60)  # 1 hour
+async def get_statuses() -> None:
+    db = client['ural_data']
+    collection_apps = db['apps']
+    dummy_list = []
+    async for doc in collection_apps.find({}, {'_id': 0}):
+        collection_app = db[doc['name']]
+        if doc["active"]:
+            response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
+    return
+
+
+
+@app.get("/do_crone")  # 1 hour
+async def get_statuses() -> None:
+    db = client['ural_data']
+    collection_apps = db['apps']
+    dummy_list = []
+    async for doc in collection_apps.find({}, {'_id': 0}):
+        collection_app = db[doc['name']]
+        if doc["active"] == "True":
+            response = rq.get(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
+    return
