@@ -9,6 +9,10 @@ async def do_insert():
     {"timestamp": 1649099104, "response_time": 110}, {"timestamp": 1649099004, "response_time": 150},
     {"timestamp": 1649098904, "response_time": 200}, {"timestamp": 1649098804, "response_time": 120}])
     # print('inserted %d docs' % (len(result.inserted_ids),))
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(do_insert())
+async def add_service():
+    db = client['ural_data']
+    result = await db['apps'].insert_many(
+        [{"name": "vk", "url": "https://vk.com", "active": True},
+         {"name": "google", "url": "https://google.com", "active": True}])
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(add_service())
