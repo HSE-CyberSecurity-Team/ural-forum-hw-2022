@@ -64,8 +64,9 @@ function get_apps(){
         success: function (d) {
             servicesAmount = 0;
             // console.log(d)
-            alert(JSON.stringify(d));
-            let container = document.getElementById("timeframes-container")
+            // alert(JSON.stringify(d));
+            // let container = document.getElementById("timeframes-container")
+            // doGraph(d)
             for (var i = 0; i < d.length; i++){
                 // let elems = service_elems(i);
                 // console.log(elems)
@@ -94,8 +95,8 @@ function get_health(app){
         // data: '{"name": "' + document.getElementById("text1").value + '", "url" : "' + document.getElementById("text1").value + '", "active" : "true"}',
         success: function (d) {
             // console.log(d)
-            alert(JSON.stringify(d));
-
+            // alert(JSON.stringify(d));
+            doGraph(d, app)
         },
         error: function (e){
           alert('error')
@@ -145,3 +146,43 @@ function addNewService(clicked_id){
         })
     }
 }
+
+
+function doGraph(points, name){
+    var keys = Object.keys(points)
+    var values = []
+    for (let key of keys){
+        values.push(points[key])
+    }
+    var trace1 = {
+      x: keys,
+      y: values,
+      type: 'scatter'
+    };
+
+    // var trace2 = {
+    //   x: [1, 2, 3, 4],
+    //   y: [16, 5, 11, 9],
+    //   type: 'scatter'
+    // };
+
+    var data = [trace1];
+
+    var layout = {
+        title:'average response time of service by day',
+        xaxis: {
+            title: 'days ago',
+            showgrid: false,
+            zeroline: false
+        },
+      yaxis: {
+        title: 'response time (ms)',
+        showline: false
+      }
+};
+
+    Plotly.newPlot('MyDiv', data, layout);
+    // alert(name + " GRAPH")
+    // alert(keys, values)
+}
+

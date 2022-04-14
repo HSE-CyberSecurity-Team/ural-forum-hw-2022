@@ -21,12 +21,16 @@ client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
 
 def day_ago(days_ago):
     now = time.time()
-    day_start = now - (now % 86400)
+    day_start = int(now - (now % 86400))
     # yday = time.localtime(day_start - 86400 * days_ago)  # seconds/day
     # start = time.struct_time((yday.tm_year, yday.tm_mon, yday.tm_mday, 0, 0, 0, 0, 0, yday.tm_isdst))
     # today = time.localtime(now)
     # end = time.struct_time((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, today.tm_isdst))
     return day_start - 86400 * days_ago
+
+def timestampToDaysAgo(timestamp):
+    now = time.time()
+    return int(now - timestamp) // 86400
 
 
 def addToDb(app_id):
@@ -73,20 +77,22 @@ async def get_item(app_id: str, q: Optional[str] = None):
 
     # return dummy_list
 
-    new_json = dict()
-    for i in range(10):
-        for j in dummy_list:
-            temp = 0
-            amount = 0
-            if j['timestamp'] > day_ago(i) and j['timestamp'] < day_ago(i) + 86400:
-                temp += j['response_time']
-                amount += 1
-        if amount != 0:
-            new_json[i] = temp / amount
+    times_dict = dict()
+    amount_dict = dict()
+    for j in dummy_list:
+        temp = 0
+        daysAgo = timestampToDaysAgo(j['timestamp'])
+        amount = 0
+        if daysAgo not in times_dict.keys():
+            times_dict[daysAgo] = j['response_time']
+            amount_dict[daysAgo] = 1
         else:
-            new_json[i] = -1
+            times_dict[daysAgo] += j['response_time']
+            amount_dict[daysAgo] += 1
+    for i in times_dict:
+        times_dict[i] /= amount_dict[i]
 
-    return new_json
+    return times_dict
 
 @app.options("/add")
 async def add_item_cors_shit(response: Response):
