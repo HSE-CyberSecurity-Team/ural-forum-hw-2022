@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,12 +9,17 @@ from fastapi_utils.tasks import repeat_every
 import requests as rq
 from pydantic import BaseModel
 from pathlib import Path
-
+from email.message import EmailMessage
+import aiosmtplib
 
 class Service(BaseModel):
     name: str
     url: str
     active: bool
+
+class EmailForm(BaseModel):
+    email: str
+    services: List[str]
 
 
 client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
@@ -126,6 +131,20 @@ async def add_item(service: Service):
     else:
         return "app already exists"
 
+@app.post("/email")
+async def add_email(email: EmailForm):
+    # return email.__dict__
+    db = client['ural_data']
+    collection = db['emails']
+    r = await collection.find_one({"email": email.email}, {'_id': 0})
+    if r is None:
+        collection.insert_one({"email": email.email, "services": email.services})
+        return "added new email"
+    else:
+        collection.update_one({"email": email.email}, {"$set": {"services": email.services}})
+        return "mailing preferences updated"
+
+
 @app.delete("/health/{app_id}")
 async def delete_item(app_id: str, q: Optional[str] = None):
     # delete items from db
@@ -155,6 +174,25 @@ async def get_statuses() -> None:
             response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
     return
+
+
+#TODO
+# @app.on_event("startup")
+# @repeat_every(seconds=60*60*24)  # 1 day
+# async def get_statuses() -> None:
+#     db = client['ural_data']
+#     collection_emails = db['emails']
+#     collection_apps = db['apps']
+#     dummy_list = []
+#     async for doc in collection_apps.find({}, {'_id': 0}):
+#         if problemWith(app):
+#             async for email in collection_emails.find({"services": ***})
+#                 message = EmailMessage()
+#                 message["From"] = "root@localhost"
+#                 message["To"] = "somebody@example.com"
+#                 message["Subject"] = "Hello World!"
+#                 message.set_content("Sent via aiosmtplib")
+#     return
 
 
 
