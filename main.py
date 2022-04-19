@@ -11,6 +11,8 @@ from pydantic import BaseModel
 from pathlib import Path
 from email.message import EmailMessage
 import aiosmtplib
+import aiohttp
+
 
 class Service(BaseModel):
     name: str
@@ -51,6 +53,19 @@ async def sendEmail(email : str, app, time):
     message.set_content("There are some problems with service {app_name} at {app_url}. Average response time is {time}".format(app_name=app['name'],
                                                                                                app_url=app['url'], time=time))
     await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
+
+async def response_time(url):
+    async with aiohttp.ClientSession() as session:
+
+        pokemon_url = url
+        t1 = time.time()
+        async with session.get(pokemon_url) as resp:
+            pokemon = await resp.read()
+            t2 = time.time()
+            result_time = (t2 - t1) * 1000
+            # print('response time:', (t2-t1) * 1000)
+            return result_time
+
 
 def addToDb(app_id):
     return True
@@ -159,7 +174,7 @@ def replace_item(old_app_id: str, new_app_id: str):
 
 
 @app.on_event("startup")
-@repeat_every(seconds=60*60)  # 1 hour
+@repeat_every(seconds=5)  # 1 hour
 async def get_statuses() -> None:
     db = client['ural_data']
     collection_apps = db['apps']
@@ -168,8 +183,8 @@ async def get_statuses() -> None:
         collection_app = db[doc['name']]
 
         if doc["active"]:
-            response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
-            collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
+            responseTime = await response_time(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": responseTime})
     return
 
 
@@ -224,6 +239,6 @@ async def get_statuses() -> None:
     async for doc in collection_apps.find({}, {'_id': 0}):
         collection_app = db[doc['name']]
         if doc["active"]:
-            response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
-            collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
+            responseTime = await response_time(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": responseTime})
     return

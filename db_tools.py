@@ -19,5 +19,6 @@ async def do_insert2():
     db = client['ural_data']
     result = await db['emails'].insert_one({"email": "example@example.com", "services": ["vk", "google"]})
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(do_insert2())
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(do_insert2())
+print('awd')
