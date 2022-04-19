@@ -37,6 +37,20 @@ def timestampToDaysAgo(timestamp):
     now = time.time()
     return int(now - timestamp) // 86400
 
+def avgResponseTime(appStructure : List):
+    sum = 0
+    for i in appStructure:
+        sum += i['response_time']
+    return sum / len(appStructure)
+
+async def sendEmail(email : str, app, time):
+    message = EmailMessage()
+    message["From"] = "ServicesMonitoring@HorizonCorp.org"
+    message["To"] = email
+    message["Subject"] = "Problems with app {app_name}".format(app_name=app['name'])
+    message.set_content("There are some problems with service {app_name} at {app_url}. Average response time is {time}".format(app_name=app['name'],
+                                                                                               app_url=app['url'], time=time))
+    await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
 
 def addToDb(app_id):
     return True
@@ -77,7 +91,7 @@ async def get_item(app_id: str, q: Optional[str] = None):
     dummy_list = []
     temp = 0
     amount = 0
-    async for doc in collection.find({}, {'_id': 0}):
+    async for doc in collection.find({'i': {'$lt': 1}}):
         dummy_list.append(doc)
 
     # return dummy_list
@@ -170,29 +184,53 @@ async def get_statuses() -> None:
     dummy_list = []
     async for doc in collection_apps.find({}, {'_id': 0}):
         collection_app = db[doc['name']]
+
         if doc["active"]:
             response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
     return
 
 
-#TODO
+# TODO
 # @app.on_event("startup")
+
 # @repeat_every(seconds=60*60*24)  # 1 day
-# async def get_statuses() -> None:
-#     db = client['ural_data']
-#     collection_emails = db['emails']
-#     collection_apps = db['apps']
-#     dummy_list = []
-#     async for doc in collection_apps.find({}, {'_id': 0}):
-#         if problemWith(app):
-#             async for email in collection_emails.find({"services": ***})
-#                 message = EmailMessage()
-#                 message["From"] = "root@localhost"
-#                 message["To"] = "somebody@example.com"
-#                 message["Subject"] = "Hello World!"
-#                 message.set_content("Sent via aiosmtplib")
-#     return
+@app.get('/send-mail')
+async def get_statuses() -> None:
+    db = client['ural_data']
+    collection_emails = db['emails']
+    collection_apps = db['apps']
+    apps = []
+    emailsToSend = []
+    async for doc in collection_apps.find({}, {'_id': 0}):
+        apps.append(doc)
+    async for doc in collection_emails.find({}, {'_id': 0}):
+        emailsToSend.append(doc)
+
+    # return apps, emailsToSend
+    for app in apps:
+        app_collection = db[app['name']]
+        responseTimes = []
+        async for doc in app_collection.find({'timestamp': {'$gt': day_ago(2)}}, {'_id': 0}):
+            responseTimes.append(doc)
+
+        avgTime = avgResponseTime(responseTimes)
+        if avgTime > 100:
+            for email in emailsToSend:
+                if app['name'] in email['services']:
+                    await sendEmail(email['email'], app, avgTime)
+
+        return
+    # return
+    # async for doc in collection_apps.find({}, {'_id': 0}):
+    #     if problemWith(app):
+    #         async for email in collection_emails.find({"services": ***})
+    #             message = EmailMessage()
+    #             message["From"] = "root@localhost"
+    #             message["To"] = "somebody@example.com"
+    #             message["Subject"] = "Hello World!"
+    #             message.set_content("Sent via aiosmtplib")
+    # return
 
 
 
@@ -203,7 +241,7 @@ async def get_statuses() -> None:
     dummy_list = []
     async for doc in collection_apps.find({}, {'_id': 0}):
         collection_app = db[doc['name']]
-        if doc["active"] == "True":
-            response = rq.get(doc['url'])
+        if doc["active"]:
+            response = rq.get(doc['url'])#говнокод - нужен асинхронный requests
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": response.elapsed.total_seconds() * 1000})
     return
