@@ -91,7 +91,7 @@ async def get_item(app_id: str, q: Optional[str] = None):
     dummy_list = []
     temp = 0
     amount = 0
-    async for doc in collection.find({'i': {'$lt': 1}}):
+    async for doc in collection.find({}, {'_id': 0}):
         dummy_list.append(doc)
 
     # return dummy_list
@@ -112,24 +112,6 @@ async def get_item(app_id: str, q: Optional[str] = None):
         times_dict[i] /= amount_dict[i]
 
     return times_dict
-
-@app.options("/add")
-async def add_item_cors_shit(response: Response):
-    response
-    response.headers["Content-type"] ="application/json"
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    # response.__setitem__("Access-Control-Allow-Origin", "*")
-    return {"status" : "success"}
-
-@app.options("/app_lists")
-async def add_item_cors_shit(response: Response):
-    response
-    response.headers["Content-type"] ="application/json"
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    # response.__setitem__("Access-Control-Allow-Origin", "*")
-    return {"status" : "success"}
 
 @app.post("/add")
 async def add_item(service: Service):
