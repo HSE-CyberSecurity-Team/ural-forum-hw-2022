@@ -31,11 +31,13 @@ client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
 def day_ago(days_ago):
     now = time.time()
     day_start = int(now - (now % 86400))
+
     # yday = time.localtime(day_start - 86400 * days_ago)  # seconds/day
     # start = time.struct_time((yday.tm_year, yday.tm_mon, yday.tm_mday, 0, 0, 0, 0, 0, yday.tm_isdst))
     # today = time.localtime(now)
     # end = time.struct_time((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, today.tm_isdst))
     return day_start - 86400 * days_ago
+
 
 
 def timestampToDaysAgo(timestamp):
@@ -82,7 +84,6 @@ def addToDb(app_id):
 
 def deleteFromDb(app_id):
     return True
-
 
 app = FastAPI()
 app.mount(
@@ -166,7 +167,6 @@ async def add_item(service: Service):
     else:
         return "app already exists"
 
-
 @app.post("/email")
 async def add_email(email: EmailForm):
     # return email.__dict__
@@ -180,7 +180,6 @@ async def add_email(email: EmailForm):
         collection.update_one({"email": email.email}, {"$set": {"services": email.services}})
         return "mailing preferences updated"
 
-
 @app.delete("/health/{app_id}")
 async def delete_item(app_id: str, q: Optional[str] = None):
     # delete items from db
@@ -188,7 +187,6 @@ async def delete_item(app_id: str, q: Optional[str] = None):
     collection = db['apps']
     collection.update_one({"name": app_id}, {"$set": {"active": False}})
     return True
-
 
 @app.patch("/health/{app_id}")
 def replace_item(old_app_id: str, new_app_id: str):
@@ -200,7 +198,7 @@ def replace_item(old_app_id: str, new_app_id: str):
 
 
 @app.on_event("startup")
-@repeat_every(seconds=5)  # 1 hour
+@repeat_every(seconds=60*60)  # 1 hour
 async def get_statuses() -> None:
     db = client['ural_data']
     collection_apps = db['apps']
@@ -254,7 +252,6 @@ async def get_statuses() -> None:
     #             message["Subject"] = "Hello World!"
     #             message.set_content("Sent via aiosmtplib")
     # return
-
 
 @app.get("/do_crone")  # 1 hour
 async def get_statuses() -> None:
