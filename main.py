@@ -19,12 +19,14 @@ class Service(BaseModel):
     url: str
     active: bool
 
+
 class EmailForm(BaseModel):
     email: str
     services: List[str]
 
 
 client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
+
 
 def day_ago(days_ago):
     now = time.time()
@@ -35,28 +37,35 @@ def day_ago(days_ago):
     # end = time.struct_time((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, today.tm_isdst))
     return day_start - 86400 * days_ago
 
+
 def timestampToDaysAgo(timestamp):
     now = time.time()
     return int(now - timestamp) // 86400
 
-def avgResponseTime(appStructure : List):
+
+def avgResponseTime(appStructure: List):
     sum = 0
     for i in appStructure:
-        sum += i['response_time']
+        if i[1] >= 500:  #супер мега костыль (надо перепроверить)
+            return 1000
+        sum += i[0]['response_time']
     return sum / len(appStructure)
 
-async def sendEmail(email : str, app, time):
+
+async def sendEmail(email: str, app, time):
     message = EmailMessage()
     message["From"] = "ServicesMonitoring@HorizonCorp.org"
     message["To"] = email
     message["Subject"] = "Problems with app {app_name}".format(app_name=app['name'])
-    message.set_content("There are some problems with service {app_name} at {app_url}. Average response time is {time}".format(app_name=app['name'],
-                                                                                               app_url=app['url'], time=time))
+    message.set_content(
+        "There are some problems with service {app_name} at {app_url}. Average response time is {time}".format(
+            app_name=app['name'],
+            app_url=app['url'], time=time))
     await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
 
-async def response_time(url):
-    async with aiohttp.ClientSession() as session:
 
+async def response_time_code(url):
+    async with aiohttp.ClientSession() as session:
         pokemon_url = url
         t1 = time.time()
         async with session.get(pokemon_url) as resp:
@@ -64,14 +73,16 @@ async def response_time(url):
             t2 = time.time()
             result_time = (t2 - t1) * 1000
             # print('response time:', (t2-t1) * 1000)
-            return result_time
+            return result_time, resp.status
 
 
 def addToDb(app_id):
     return True
 
+
 def deleteFromDb(app_id):
     return True
+
 
 app = FastAPI()
 app.mount(
@@ -106,27 +117,40 @@ async def get_item(app_id: str, q: Optional[str] = None):
     dummy_list = []
     temp = 0
     amount = 0
-    async for doc in collection.find({}, {'_id': 0}):
+    async for doc in collection.find({'timestamp': {'$gt': day_ago(11)}}, {'_id': 0}):
         dummy_list.append(doc)
 
     # return dummy_list
 
     times_dict = dict()
     amount_dict = dict()
+    anyError = False
+    upTime = 0
     for j in dummy_list:
         temp = 0
+        multiplier = 1
+        try:
+            if int(j['status']) < 500:
+                upTime += 1
+            else:
+                multiplier = 100
+        except:
+            upTime += 1
+            pass
+
         daysAgo = timestampToDaysAgo(j['timestamp'])
         amount = 0
         if daysAgo not in times_dict.keys():
-            times_dict[daysAgo] = j['response_time']
+            times_dict[daysAgo] = j['response_time'] * multiplier
             amount_dict[daysAgo] = 1
         else:
-            times_dict[daysAgo] += j['response_time']
+            times_dict[daysAgo] += j['response_time'] * multiplier
             amount_dict[daysAgo] += 1
     for i in times_dict:
         times_dict[i] /= amount_dict[i]
 
-    return times_dict
+    return times_dict, upTime / len(dummy_list)
+
 
 @app.post("/add")
 async def add_item(service: Service):
@@ -141,6 +165,7 @@ async def add_item(service: Service):
         return service.__dict__
     else:
         return "app already exists"
+
 
 @app.post("/email")
 async def add_email(email: EmailForm):
@@ -164,6 +189,7 @@ async def delete_item(app_id: str, q: Optional[str] = None):
     collection.update_one({"name": app_id}, {"$set": {"active": False}})
     return True
 
+
 @app.patch("/health/{app_id}")
 def replace_item(old_app_id: str, new_app_id: str):
     # delete items from db
@@ -183,8 +209,8 @@ async def get_statuses() -> None:
         collection_app = db[doc['name']]
 
         if doc["active"]:
-            responseTime = await response_time(doc['url'])
-            collection_app.insert_one({"timestamp": int(time.time()), "response_time": responseTime})
+            res = await response_time_code(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": res[0], "status": res[1]})
     return
 
 
@@ -212,7 +238,7 @@ async def get_statuses() -> None:
             responseTimes.append(doc)
 
         avgTime = avgResponseTime(responseTimes)
-        if avgTime > 100:
+        if avgTime > 500:
             for email in emailsToSend:
                 if app['name'] in email['services']:
                     await sendEmail(email['email'], app, avgTime)
@@ -230,7 +256,6 @@ async def get_statuses() -> None:
     # return
 
 
-
 @app.get("/do_crone")  # 1 hour
 async def get_statuses() -> None:
     db = client['ural_data']
@@ -239,6 +264,6 @@ async def get_statuses() -> None:
     async for doc in collection_apps.find({}, {'_id': 0}):
         collection_app = db[doc['name']]
         if doc["active"]:
-            responseTime = await response_time(doc['url'])
-            collection_app.insert_one({"timestamp": int(time.time()), "response_time": responseTime})
+            res = await response_time_code(doc['url'])
+            collection_app.insert_one({"timestamp": int(time.time()), "response_time": res[0], "status": res[1]})
     return

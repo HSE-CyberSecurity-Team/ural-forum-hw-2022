@@ -96,7 +96,8 @@ function get_health(app){
         success: function (d) {
             // console.log(d)
             // alert(JSON.stringify(d));
-            doGraph(d, app)
+            alert("Up time is " + d[1]*100 + "%")
+            doGraph(d[0], app)
         },
         error: function (e){
           alert('error')
