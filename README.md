@@ -61,4 +61,7 @@ API АСОИ ФинЦЕРТ).
 ![ Image 1](/image.png)
 Альфа версия
 ![image](https://user-images.githubusercontent.com/33466049/164570587-40cdff97-71f8-4391-97e4-cec312c5bc7e.png)
+swagger с api методами
+![image](https://user-images.githubusercontent.com/33466049/164570747-c6d2ea94-d9b8-41c9-abf7-2ec65e0c5f09.png)
+
 
