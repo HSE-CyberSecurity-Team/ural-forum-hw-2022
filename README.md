@@ -59,5 +59,6 @@ API АСОИ ФинЦЕРТ).
 ---
 смешная схема интеграций и запросов <br>
 ![ Image 1](/image.png)
-смешная схема интеграций и запросов <br>
-![file2](/openapi.json)
+Альфа версия
+![image](https://user-images.githubusercontent.com/33466049/164570587-40cdff97-71f8-4391-97e4-cec312c5bc7e.png)
+
