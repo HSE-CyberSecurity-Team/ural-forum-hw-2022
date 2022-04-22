@@ -55,13 +55,18 @@ API АСОИ ФинЦЕРТ).
 удобство в использовании, глубина проведенных исследований
 и презентация предлагаемого решения.
 
+# Черновик схемы разработки
+---
+![ Image 1](/draft.jpg) <br>
+
+смешная схема интеграций и запросов <br> <br>
+![ Image 1](/image.png)
+
 # Реализация
 ---
-смешная схема интеграций и запросов <br>
-![ Image 1](/image.png)
 Альфа версия
 ![image](https://user-images.githubusercontent.com/33466049/164570587-40cdff97-71f8-4391-97e4-cec312c5bc7e.png)
-swagger с api методами
+ <br> <br>swagger с api методами <br> <br>
 ![image](https://user-images.githubusercontent.com/33466049/164570747-c6d2ea94-d9b8-41c9-abf7-2ec65e0c5f09.png)
 
 
