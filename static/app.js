@@ -139,10 +139,13 @@ function addNewService(clicked_id){
             data: '{"name": "' + name + '", "url" : "' + url + '", "active" : "true"}',
             success: function (data) {
 
-                // alert("Thanks!");
+                alert(data);
                 if (data === "app already exists"){
                     get_health(name)
                 }
+            },
+            error: function(xhr, status, error) {
+                  alert(xhr.responseText);
             }
         })
     }

@@ -1,6 +1,6 @@
 from typing import Optional, List
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import time
@@ -12,7 +12,7 @@ from pathlib import Path
 from email.message import EmailMessage
 import aiosmtplib
 import aiohttp
-
+import re
 
 class Service(BaseModel):
     name: str
@@ -48,34 +48,50 @@ def timestampToDaysAgo(timestamp):
 def avgResponseTime(appStructure: List):
     sum = 0
     for i in appStructure:
-        if i[1] >= 500:  #супер мега костыль (надо перепроверить)
-            return 1000
-        sum += i[0]['response_time']
-    return sum / len(appStructure)
+        sum += int(i['response_time'])
+    if len(appStructure) != 0:
+        return sum / len(appStructure)
+    else:
+        return 0
 
 
-async def sendEmail(email: str, app, time):
+async def sendEmail(email: str, app, time, was500=False):
+    if was500:
+        text = "Service was down at some time with 5xx responses"
+    else:
+        text = "Service was always up"
     message = EmailMessage()
-    message["From"] = "ServicesMonitoring@HorizonCorp.org"
+    # message["From"] = "ServicesMonitoring@HorizonCorp.org"
+    message['From'] = "servicesmonitoringhorizoncorp@gmail.com"
     message["To"] = email
     message["Subject"] = "Problems with app {app_name}".format(app_name=app['name'])
     message.set_content(
-        "There are some problems with service {app_name} at {app_url}. Average response time is {time}".format(
+        "There are some problems with service {app_name} at {app_url}. Average response time is {time} ms. {text}".format(
             app_name=app['name'],
-            app_url=app['url'], time=time))
-    await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
+            app_url=app['url'], time=time, text=text))
+    # await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
+    try:
+        # await aiosmtplib.send(message, hostname="smtp.gmail.com", port=587, start_tls=True, username="157875291498-a07h9cmbfbp17uliu6s926ps7jg8hs8q.apps.googleusercontent.com", password="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")
+        await aiosmtplib.send(message, hostname="smtp.gmail.com", port=587, start_tls=True,
+                              username="servicesmonitoringhorizoncorp@gmail.com",
+                              password="***")
 
+    except aiosmtplib.errors.SMTPAuthenticationError as e:
+        return e
 
 async def response_time_code(url):
     async with aiohttp.ClientSession() as session:
         pokemon_url = url
         t1 = time.time()
-        async with session.get(pokemon_url) as resp:
-            pokemon = await resp.read()
-            t2 = time.time()
-            result_time = (t2 - t1) * 1000
-            # print('response time:', (t2-t1) * 1000)
-            return result_time, resp.status
+        try:
+            async with session.get(pokemon_url) as resp:
+                pokemon = await resp.read()
+                t2 = time.time()
+                result_time = (t2 - t1) * 1000
+                # print('response time:', (t2-t1) * 1000)
+                return result_time, resp.status
+        except aiohttp.client_exceptions.ClientConnectorError:
+            return 5000, 500
 
 
 def addToDb(app_id):
@@ -154,9 +170,17 @@ async def get_item(app_id: str, q: Optional[str] = None):
 
 
 @app.post("/add")
-async def add_item(service: Service):
+async def add_item(service: Service, response: Response):
+    if not re.match("^[a-zA-Z0-9_-]*$", service.name):
+        response.status_code = 422
+        return "not suitable name, use only letters and numbers"
+    elif not re.match("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})", service.url):
+        response.status_code = 422
+        return "not suitable url"
+
     db = client['ural_data']
     collection = db['apps']
+
     # service["active"] = True
     # d = dict(service)
     # return await collection.count_documents({"name": service.name})
@@ -168,7 +192,10 @@ async def add_item(service: Service):
         return "app already exists"
 
 @app.post("/email")
-async def add_email(email: EmailForm):
+async def add_email(email: EmailForm, response: Response):
+    if not re.match("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+", email.email):
+        response.status_code = 422
+        return "not correct email format"
     # return email.__dict__
     db = client['ural_data']
     collection = db['emails']
@@ -211,18 +238,16 @@ async def get_statuses() -> None:
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": res[0], "status": res[1]})
     return
 
-
-# TODO
-# @app.on_event("startup")
-
-# @repeat_every(seconds=60*60*24)  # 1 day
-@app.get('/send-mail')
-async def get_statuses() -> None:
+@app.on_event("startup")
+@repeat_every(seconds=60*60*24)  # 1 day
+# @app.get('/send-mail')
+async def send_emails() -> None:
     db = client['ural_data']
     collection_emails = db['emails']
     collection_apps = db['apps']
     apps = []
     emailsToSend = []
+
     async for doc in collection_apps.find({}, {'_id': 0}):
         apps.append(doc)
     async for doc in collection_emails.find({}, {'_id': 0}):
@@ -230,18 +255,29 @@ async def get_statuses() -> None:
 
     # return apps, emailsToSend
     for app in apps:
+        check = False
+        code = 200
         app_collection = db[app['name']]
         responseTimes = []
         async for doc in app_collection.find({'timestamp': {'$gt': day_ago(2)}}, {'_id': 0}):
             responseTimes.append(doc)
+            if 'status' in doc.keys() and int(doc['status']) >= 500:
+                check = True
+                code = doc['status']
+
+
 
         avgTime = avgResponseTime(responseTimes)
-        if avgTime > 500:
+        if avgTime > 50:
             for email in emailsToSend:
                 if app['name'] in email['services']:
-                    await sendEmail(email['email'], app, avgTime)
+                    await sendEmail(email['email'], app, avgTime, was500=check)
+        elif check:
+            for email in emailsToSend:
+                if app['name'] in email['services']:
+                    await sendEmail(email['email'], app, avgTime, was500=check)
 
-        return
+    return
     # return
     # async for doc in collection_apps.find({}, {'_id': 0}):
     #     if problemWith(app):
@@ -254,7 +290,7 @@ async def get_statuses() -> None:
     # return
 
 @app.get("/do_crone")  # 1 hour
-async def get_statuses() -> None:
+async def get_statuses2() -> None:
     db = client['ural_data']
     collection_apps = db['apps']
     dummy_list = []
