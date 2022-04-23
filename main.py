@@ -71,7 +71,6 @@ async def sendEmail(email: str, app, time, was500=False):
             app_url=app['url'], time=time, text=text))
     # await aiosmtplib.send(message, hostname="127.0.0.1", port=1025)
     try:
-        # await aiosmtplib.send(message, hostname="smtp.gmail.com", port=587, start_tls=True, username="157875291498-a07h9cmbfbp17uliu6s926ps7jg8hs8q.apps.googleusercontent.com", password="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")
         await aiosmtplib.send(message, hostname="smtp.gmail.com", port=587, start_tls=True,
                               username="servicesmonitoringhorizoncorp@gmail.com",
                               password="***")
