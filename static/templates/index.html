@@ -28,6 +28,7 @@
 
     <!-- Le styles -->
     <link rel="stylesheet" media="screen" href="static/0.763ab44e660250f88ee6.css" />
+    <link rel="stylesheet" media="all" href="static/popup.css" />
     <link rel="stylesheet" media="all" href="static/status_manifest-08a0ce5b8cccd461963af5bf415c8d59b4d24d4fe74d8f6d3661643cb959f919.css" />
 
     <script src="static/jquery-3.5.1.min-729e416557a365062a8a20f0562f18aa171da57298005d392312670c706c68de.js"></script>
@@ -395,9 +396,12 @@
                 <input id="pushMe2" type="button" value="Add" style="width:100%;color:white;background-color:#4c9aff;visibility:hidden;" onclick="addService()">
             </div>
 
-            <a
-              class="btn btn-primary btn-block text-uppercase mb-3" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" >Add new Service</a>
-            <button class="btn btn-primary btn-block text-uppercase">
+<!--            <a-->
+<!--              class="btn btn-primary btn-block text-uppercase mb-3" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" >Add new Service</a>-->
+            <button class="btn btn-primary btn-block text-uppercase" onclick="showAddMenu()">
+              Add new Service
+            </button>
+            <button class="btn btn-primary btn-block text-uppercase" onclick="openForm()">
               Follow selected services
             </button>
         </div>
@@ -636,6 +640,17 @@
 
 </div>
 </div>
-
+<div class="loginPopup">
+      <div class="formPopup" id="popupForm">
+        <form class="formContainer" id="popupForm2" onsubmit="return blockGet(event)">
+          <h2>Enter your email address</h2>
+          <input type="text" id="email" placeholder="Your Email" name="email" required>
+        <button class="btn btn-primary btn-block text-uppercase" type="submit" class="btn" onclick="closeForm()">Close</button>
+          <button class="btn btn-primary btn-block text-uppercase" type="submit" class="btn" onclick="showAddEmail()">Sign to services</button>
+            <fieldset id="popupServiceList">
+            </fieldset>
+        </form>
+      </div>
+    </div>
 </body>
 </html>

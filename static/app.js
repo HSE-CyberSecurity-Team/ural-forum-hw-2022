@@ -1,3 +1,10 @@
+// var form = document.getElementById('popupForm2');
+// form.onsubmit = function (ev) {
+//   ev.preventDefault();
+//   alert('invalid input data')
+// };
+
+
 var servicesAmount = 0;
 
 function service_elems(id, d) {
@@ -78,7 +85,7 @@ function get_apps(){
             }
         },
         error: function (e){
-          alert('lol')
+          alert('error')
         }
     })
 }
@@ -113,6 +120,103 @@ function showAddMenu(){
     service = {"name": "", "url": "", "active": true}
     service_elems(servicesAmount, service)
 }
+
+function servicesCheckBoxes(service_name, id){
+
+    var form = document.createElement("div");
+    form.setAttribute("style", "display:flex; flex-direction: row; justify-content: center; align-items: center")
+    var checkbox = document.createElement("input")
+    checkbox.setAttribute("type", "checkbox")
+    checkbox.setAttribute("id", "checkbox_" + service_name)
+    checkbox.setAttribute("name", "service_checkbox")
+
+    var label = document.createElement("label")
+    label.setAttribute("for", "checkbox_" + service_name)
+    label.innerHTML = service_name
+
+    form.append(checkbox)
+    form.append(label)
+
+    document.getElementById("popupServiceList").appendChild(form);
+
+}
+
+function openForm() {
+    document.getElementById("popupForm").style.display = "block";
+    $.ajax
+    ({
+        type: "GET",
+        url: 'http://127.0.0.1:8000/app_lists',
+        contentType: "application/json; charset=utf-8",
+        success: function (d) {
+            servicesAmount = 0;
+            // console.log(d)
+            // alert(JSON.stringify(d));
+            // let container = document.getElementById("timeframes-container")
+            // doGraph(d)
+            for (var i = 0; i < d.length; i++) {
+                // let elems = service_elems(i);
+                // console.log(elems)
+                // container.appendChild(elems[0]);
+                // container.appendChild(elems[1]);
+                // container.appendChild(elems[2]);
+                // console.log(d[i]['name'], i)
+                servicesCheckBoxes(d[i]['name'], i);
+                // servicesAmount += 1;
+            }
+        },
+        error: function (e) {
+            alert('lol')
+        }
+
+    })
+}
+
+function blockGet(e){
+    e.preventDefault();
+    return false;
+}
+
+  function closeForm() {
+    document.getElementById("popupForm").style.display = "none";
+  }
+
+function showAddEmail(){
+    var inputs = document.getElementsByName("service_checkbox");
+    // console.log(inputs)
+    var app_list = []
+    for(var i = 0; i < inputs.length; i++) {
+        if (inputs[i].checked) {
+            app_list.push(inputs[i].id.split("_")[1])
+        }
+    }
+    // console.log(app_list)
+    document.getElementById("popupForm").style.display = "none";
+    var email = document.getElementById("email").value;
+    // alert(email)
+    var json = {"email": email, "services": app_list}
+    $.ajax
+        ({
+            type: "POST",
+            url: 'http://127.0.0.1:8000/email',
+            contentType:"application/json; charset=utf-8",
+            // headers: {"Access-Control-Allow-Origin":"*"},
+            dataType: 'json',
+
+            async: false,
+            // data: '{"email": "' + email + '", "url" : "' + url + '", "active" : "true"}',
+            data: JSON.stringify(json),
+
+            success: function (data) {
+
+                alert("Congrats, you signed now");
+            },
+            error: function(xhr, status, error) {
+                  alert(xhr.responseText);
+            }
+        })
+
+  }
 
 function addNewService(clicked_id){
     // alert('adding new service for button ' + clicked_id)
