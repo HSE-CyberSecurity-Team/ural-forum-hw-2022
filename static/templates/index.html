@@ -200,6 +200,44 @@
             background: #72767d;
         }
 
+
+        .buttons {
+  display: flex;
+  height: 50px;
+  padding: 0;
+  background: #009578;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  overflow: hidden;
+  font-family: "Quicksand", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.buttons:hover {
+  background: #008168;
+}
+
+.buttons:active {
+  background: #006e58;
+}
+
+.buttons__text,
+.buttons__icon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 24px;
+  color: #fff;
+  height: 100%;
+}
+
+.buttons__icon {
+  font-size: 1.5em;
+  background: rgba(0, 0, 0, 0.08);
+}
+
     </style>
 
 
@@ -293,6 +331,23 @@
 
                         <div class="metrics-container" id="MyDiv">
                     </div>
+                </div>
+            </div>
+            <div class="SPACE">
+                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/space.png"/></a>
+            </div>
+             <div class="metrics-container">
+                <div class="metric border-color">
+                    <div class="metric-meta font-large">
+
+                        <div class="metric-name color-primary">
+                            Latest Response
+                        </div>
+
+                    </div>
+                        <div class="metrics-info">
+                            <label id="MyData"></label>
+                        </div>
                 </div>
             </div>
 

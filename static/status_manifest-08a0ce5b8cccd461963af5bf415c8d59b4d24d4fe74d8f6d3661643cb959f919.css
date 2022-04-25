@@ -90,10 +90,6 @@ textarea::placeholder {
     }
 }
 
-a.delete-action:hover {
-    color: #e74c3c
-}
-
 .pull-right {
     float: right
 }
@@ -288,22 +284,6 @@ input:-moz-placeholder {
     color: #bbb
 }
 
-button::-moz-focus-inner, input::-moz-focus-inner {
-    padding: 0;
-    border: 0
-}
-
-button, input[type='button'], input[type='reset'], input[type='submit'] {
-    cursor: pointer;
-    -webkit-appearance: button;
-    margin: 0px
-}
-
-label, input, textarea, button, select {
-    font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, Sans-Serif;
-    font-size: 16px;
-    vertical-align: middle
-}
 
 .full-width-elements input[type='text'], .full-width-elements input[type='password'], .full-width-elements input[type='email'], .full-width-elements textarea, .full-width-elements select, .full-width-elements .chzn-container-single, .full-width-elements .chzn-single {
     width: 100%

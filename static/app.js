@@ -37,10 +37,14 @@ function service_elems(id, d) {
             url.setAttribute("placeholder", "service_url_"+id);
 
             // Create a button to show statistics
+
             var button = document.createElement("button");
             button.setAttribute("name", "button_"+id);
             button.setAttribute("placeholder", "update")
-            button.setAttribute("id", String(id))
+            button.setAttribute("id", String(id));
+
+            button.innerHTML='<i class="fa fa-trash-o"></i>'
+            button.class="buttons";
             button.setAttribute("onclick", "addNewService(this.id)")
             // s.setAttribute("value", "Submit");
 
@@ -139,11 +143,15 @@ function get_health(app=currentApp, period){
             success: function (d) {
                 // alert("Up time is " + d[1] * 100 + "%")
                 // doGraph(d[0], app)
-                alert(d)
+                // alert(d)
+                var latest_data = (JSON.stringify(d));
+                document.getElementById("MyData").innerHTML=latest_data;
+
             },
             error: function (e) {
                 alert('error')
             }
+
         })
 
 }
