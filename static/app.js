@@ -21,14 +21,14 @@ function service_elems(id, d) {
             // form.setAttribute("method", "post");
             // form.setAttribute("action", "submit.php");
 
-            // Create an input element for emailID
+            // Create an input element for service name
             var name = document.createElement("input");
             name.setAttribute("value", d["name"])
             name.setAttribute("type", "text");
             name.setAttribute("name", "service_name_"+id);
             name.setAttribute("placeholder", "service_name_"+id);
 
-            // Create an input element for password
+            // Create an input element for url
             var url = document.createElement("input");
             url.setAttribute("value", d["url"])
             url.setAttribute("type", "text");
@@ -36,7 +36,7 @@ function service_elems(id, d) {
             // url.setAttribute("id", )
             url.setAttribute("placeholder", "service_url_"+id);
 
-            // Create a submit button
+            // Create a button to show statistics
             var button = document.createElement("button");
             button.setAttribute("name", "button_"+id);
             button.setAttribute("placeholder", "update")
@@ -44,10 +44,13 @@ function service_elems(id, d) {
             button.setAttribute("onclick", "addNewService(this.id)")
             // s.setAttribute("value", "Submit");
 
-            // Append the email_ID input to the form
+            var linebreak = document.createElement("br");
+            // s.setAttribute("value", "Submit");
+
             form.append(name);
             form.append(url);
             form.append(button);
+            form.append(linebreak);
 
             document.getElementsByClassName("timeframes-container")[0].appendChild(form);
             servicesAmount += 1
