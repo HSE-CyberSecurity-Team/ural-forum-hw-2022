@@ -6,7 +6,7 @@
 
 
 var servicesAmount = 0;
-
+var currentApp = ""
 function service_elems(id, d) {
             // var link = document.createElement('div');
             // link.id = 'link_' + String(id);
@@ -92,27 +92,60 @@ function get_apps(){
         }
     })
 }
-function get_health(app){
-    $.ajax
-    ({
-        type: "GET",
-        url: 'http://127.0.0.1:8000/health/' + app,
-        contentType:"application/json; charset=utf-8",
-        // headers: {"Access-Control-Allow-Origin":"*"},
-        // dataType: 'json',
+function get_health(app=currentApp, period){
+    if (period === "week") {
 
-        // async: false,
-        // data: '{"name": "' + document.getElementById("text1").value + '", "url" : "' + document.getElementById("text1").value + '", "active" : "true"}',
-        success: function (d) {
-            // console.log(d)
-            // alert(JSON.stringify(d));
-            alert("Up time is " + d[1]*100 + "%")
-            doGraph(d[0], app)
-        },
-        error: function (e){
-          alert('error')
-        }
-    })
+        $.ajax
+        ({
+            type: "GET",
+            url: 'http://127.0.0.1:8000/week_health/' + app,
+            contentType: "application/json; charset=utf-8",
+            // headers: {"Access-Control-Allow-Origin":"*"},
+            // dataType: 'json',
+
+            // async: false,
+            // data: '{"name": "' + document.getElementById("text1").value + '", "url" : "' + document.getElementById("text1").value + '", "active" : "true"}',
+            success: function (d) {
+                // console.log(d)
+                // alert(JSON.stringify(d));
+                alert("Up time is " + d[1] * 100 + "%")
+                doGraph(d[0], app)
+            },
+            error: function (e) {
+                alert('error')
+            }
+        })
+    }
+    else if (period === "day"){
+        $.ajax
+        ({
+            type: "GET",
+            url: 'http://127.0.0.1:8000/day_health/' + app,
+            contentType: "application/json; charset=utf-8",
+            success: function (d) {
+                alert("Up time is " + d[1] * 100 + "%")
+                doGraph(d[0], app)
+            },
+            error: function (e) {
+                alert('error')
+            }
+        })
+    }
+    $.ajax
+        ({
+            type: "GET",
+            url: 'http://127.0.0.1:8000/latest/' + app,
+            contentType: "application/json; charset=utf-8",
+            success: function (d) {
+                // alert("Up time is " + d[1] * 100 + "%")
+                // doGraph(d[0], app)
+                alert(d)
+            },
+            error: function (e) {
+                alert('error')
+            }
+        })
+
 }
 
 
@@ -248,7 +281,8 @@ function addNewService(clicked_id){
 
                 alert(data);
                 if (data === "app already exists"){
-                    get_health(name)
+                    currentApp = name;
+                    get_health(app=name, period="week")
                 }
             },
             error: function(xhr, status, error) {

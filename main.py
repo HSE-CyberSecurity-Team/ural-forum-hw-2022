@@ -13,6 +13,8 @@ from email.message import EmailMessage
 import aiosmtplib
 import aiohttp
 import re
+from datetime import datetime
+
 
 class Service(BaseModel):
     name: str
@@ -37,7 +39,6 @@ def day_ago(days_ago):
     # today = time.localtime(now)
     # end = time.struct_time((today.tm_year, today.tm_mon, today.tm_mday, 0, 0, 0, 0, 0, today.tm_isdst))
     return day_start - 86400 * days_ago
-
 
 
 def timestampToDaysAgo(timestamp):
@@ -78,6 +79,7 @@ async def sendEmail(email: str, app, time, was500=False):
     except aiosmtplib.errors.SMTPAuthenticationError as e:
         return e
 
+
 async def response_time_code(url):
     async with aiohttp.ClientSession() as session:
         pokemon_url = url
@@ -99,6 +101,7 @@ def addToDb(app_id):
 
 def deleteFromDb(app_id):
     return True
+
 
 app = FastAPI()
 app.mount(
@@ -124,48 +127,97 @@ async def app_lists():
     return dummy_list
 
 
-@app.get("/health/{app_id}")
-async def get_item(app_id: str, q: Optional[str] = None):
-    dummy_json = {1649099304: 100, 1649099204: 80, 1649099104: 110, 1649099004: 150, 1649098904: 200, 1649098804: 120}
+@app.get("/{period}_health/{app_id}")
+async def get_item(app_id: str, period: str, q: Optional[str] = None):
+    if period == "week":
+        db = client['ural_data']
+        collection = db[app_id]
+        dummy_list = []
+        temp = 0
+        amount = 0
 
+        async for doc in collection.find({'timestamp': {'$gt': day_ago(11)}}, {'_id': 0}):
+            dummy_list.append(doc)
+        # return dummy_list
+
+        times_dict = dict()
+        amount_dict = dict()
+        anyError = False
+        upTime = 0
+        for j in dummy_list:
+            temp = 0
+            multiplier = 1
+            try:
+                if int(j['status']) < 500:
+                    upTime += 1
+                else:
+                    multiplier = 100
+            except:
+                upTime += 1
+                pass
+
+            daysAgo = timestampToDaysAgo(j['timestamp'])
+            amount = 0
+            if daysAgo not in times_dict.keys():
+                times_dict[daysAgo] = j['response_time'] * multiplier
+                amount_dict[daysAgo] = 1
+            else:
+                times_dict[daysAgo] += j['response_time'] * multiplier
+                amount_dict[daysAgo] += 1
+        for i in times_dict:
+            times_dict[i] /= amount_dict[i]
+
+        return times_dict, upTime / len(dummy_list)
+    elif period == "day":
+        db = client['ural_data']
+        collection = db[app_id]
+        dummy_list = []
+        temp = 0
+        amount = 0
+
+        async for doc in collection.find({'timestamp': {'$gt': day_ago(1)}}, {'_id': 0}):
+            dummy_list.append(doc)
+        # return dummy_list
+
+        times_dict = dict()
+        anyError = False
+        upTime = 0
+        for j in dummy_list:
+            temp = 0
+            multiplier = 1
+            try:
+                if int(j['status']) < 500:
+                    upTime += 1
+                else:
+                    multiplier = 100
+            except:
+                upTime += 1
+                pass
+
+            # daysAgo = timestampToDaysAgo(j['timestamp'])
+            amount = 0
+            # if daysAgo not in times_dict.keys():
+            times_dict[datetime.utcfromtimestamp(j["timestamp"]).strftime('%H:%M')] = j['response_time'] * multiplier
+            # amount_dict[daysAgo] = 1
+            # else:
+            #     times_dict[daysAgo] += j['response_time'] * multiplier
+            #     amount_dict[daysAgo] += 1
+        for i in times_dict:
+            times_dict[i] /= len(dummy_list)
+
+        return times_dict, upTime / len(dummy_list)
+
+
+@app.get("/latest/{app_id}")
+async def latest_resp(app_id: str):
     db = client['ural_data']
     collection = db[app_id]
-    dummy_list = []
-    temp = 0
-    amount = 0
-    async for doc in collection.find({'timestamp': {'$gt': day_ago(11)}}, {'_id': 0}):
-        dummy_list.append(doc)
-
-    # return dummy_list
-
-    times_dict = dict()
-    amount_dict = dict()
-    anyError = False
-    upTime = 0
-    for j in dummy_list:
-        temp = 0
-        multiplier = 1
-        try:
-            if int(j['status']) < 500:
-                upTime += 1
-            else:
-                multiplier = 100
-        except:
-            upTime += 1
-            pass
-
-        daysAgo = timestampToDaysAgo(j['timestamp'])
-        amount = 0
-        if daysAgo not in times_dict.keys():
-            times_dict[daysAgo] = j['response_time'] * multiplier
-            amount_dict[daysAgo] = 1
-        else:
-            times_dict[daysAgo] += j['response_time'] * multiplier
-            amount_dict[daysAgo] += 1
-    for i in times_dict:
-        times_dict[i] /= amount_dict[i]
-
-    return times_dict, upTime / len(dummy_list)
+    # async for a in collection.find({'_id': 0}).sort("_id", -1).limit(1):
+    #     latest = a
+    latest = []
+    async for a in collection.find({}, {'_id': 0}).sort("_id", -1).limit(1):
+        latest.append(a)
+    return latest[0]
 
 
 @app.post("/add")
@@ -173,7 +225,9 @@ async def add_item(service: Service, response: Response):
     if not re.match("^[a-zA-Z0-9_-]*$", service.name):
         response.status_code = 422
         return "not suitable name, use only letters and numbers"
-    elif not re.match("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})", service.url):
+    elif not re.match(
+            "(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})",
+            service.url):
         response.status_code = 422
         return "not suitable url"
 
@@ -189,6 +243,7 @@ async def add_item(service: Service, response: Response):
         return service.__dict__
     else:
         return "app already exists"
+
 
 @app.post("/email")
 async def add_email(email: EmailForm, response: Response):
@@ -206,6 +261,7 @@ async def add_email(email: EmailForm, response: Response):
         collection.update_one({"email": email.email}, {"$set": {"services": email.services}})
         return "mailing preferences updated"
 
+
 @app.delete("/health/{app_id}")
 async def delete_item(app_id: str, q: Optional[str] = None):
     # delete items from db
@@ -213,6 +269,7 @@ async def delete_item(app_id: str, q: Optional[str] = None):
     collection = db['apps']
     collection.update_one({"name": app_id}, {"$set": {"active": False}})
     return True
+
 
 @app.patch("/health/{app_id}")
 def replace_item(old_app_id: str, new_app_id: str):
@@ -224,7 +281,7 @@ def replace_item(old_app_id: str, new_app_id: str):
 
 
 @app.on_event("startup")
-@repeat_every(seconds=60*60)  # 1 hour
+@repeat_every(seconds=60 * 60)  # 1 hour
 async def get_statuses() -> None:
     db = client['ural_data']
     collection_apps = db['apps']
@@ -237,8 +294,9 @@ async def get_statuses() -> None:
             collection_app.insert_one({"timestamp": int(time.time()), "response_time": res[0], "status": res[1]})
     return
 
+
 @app.on_event("startup")
-@repeat_every(seconds=60*60*24)  # 1 day
+@repeat_every(seconds=60 * 60 * 24)  # 1 day
 # @app.get('/send-mail')
 async def send_emails() -> None:
     db = client['ural_data']
@@ -264,8 +322,6 @@ async def send_emails() -> None:
                 check = True
                 code = doc['status']
 
-
-
         avgTime = avgResponseTime(responseTimes)
         if avgTime > 50:
             for email in emailsToSend:
@@ -287,6 +343,7 @@ async def send_emails() -> None:
     #             message["Subject"] = "Hello World!"
     #             message.set_content("Sent via aiosmtplib")
     # return
+
 
 @app.get("/do_crone")  # 1 hour
 async def get_statuses2() -> None:
