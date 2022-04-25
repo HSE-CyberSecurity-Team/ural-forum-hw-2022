@@ -8,6 +8,7 @@ function format_time(s) {
 }
 var servicesAmount = 0;
 var currentApp = ""
+var checkboxesLoaded = false;
 function service_elems(id, d) {
             // var link = document.createElement('div');
             // link.id = 'link_' + String(id);
@@ -172,9 +173,8 @@ function showAddMenu(){
 }
 
 function servicesCheckBoxes(service_name, id){
-
     var form = document.createElement("div");
-    form.setAttribute("style", "display:flex; flex-direction: row; justify-content: center; align-items: center")
+    form.setAttribute("style", "display:flex; flex-direction: row; justify-content: left; align-items: left")
     var checkbox = document.createElement("input")
     checkbox.setAttribute("type", "checkbox")
     checkbox.setAttribute("id", "checkbox_" + service_name)
@@ -186,40 +186,33 @@ function servicesCheckBoxes(service_name, id){
 
     form.append(checkbox)
     form.append(label)
-
+    // checkbox.append(label)
+    // form.append(label)
     document.getElementById("popupServiceList").appendChild(form);
 
 }
 
 function openForm() {
     document.getElementById("popupForm").style.display = "block";
-    $.ajax
-    ({
-        type: "GET",
-        url: 'http://127.0.0.1:8000/app_lists',
-        contentType: "application/json; charset=utf-8",
-        success: function (d) {
-            servicesAmount = 0;
-            // console.log(d)
-            // alert(JSON.stringify(d));
-            // let container = document.getElementById("timeframes-container")
-            // doGraph(d)
-            for (var i = 0; i < d.length; i++) {
-                // let elems = service_elems(i);
-                // console.log(elems)
-                // container.appendChild(elems[0]);
-                // container.appendChild(elems[1]);
-                // container.appendChild(elems[2]);
-                // console.log(d[i]['name'], i)
-                servicesCheckBoxes(d[i]['name'], i);
-                // servicesAmount += 1;
+    if (!checkboxesLoaded) {
+        checkboxesLoaded = true
+        $.ajax
+        ({
+            type: "GET",
+            url: 'http://127.0.0.1:8000/app_lists',
+            contentType: "application/json; charset=utf-8",
+            success: function (d) {
+                servicesAmount = 0;
+                for (var i = 0; i < d.length; i++) {
+                    servicesCheckBoxes(d[i]['name'], i);
+                }
+            },
+            error: function (e) {
+                alert('error')
             }
-        },
-        error: function (e) {
-            alert('error')
-        }
 
-    })
+        })
+    }
 }
 
 function blockGet(e){

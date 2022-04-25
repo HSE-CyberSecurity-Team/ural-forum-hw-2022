@@ -64,11 +64,13 @@
       .openButton:hover {
         opacity: 1;
       }
-p,
-label {
-    font: 1rem 'Fira Sans', sans-serif;
+input[type=checkbox] {
+    /*vertical-align: middle;*/
+    /*position: relative;*/
+    /*bottom: 0px;*/
 }
 
-input {
-    margin: .4rem;
+label {
+    display: block;
 }
+
