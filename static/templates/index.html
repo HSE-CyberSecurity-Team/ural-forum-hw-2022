@@ -48,32 +48,40 @@
             background-color:#FFFFFF;
         }
 
-        #uptime-tooltip .pointer-container .pointer-smaller {
-            border-bottom-color:#FFFFFF;
-        }
-
         /* tany patch*/
 .btn {
-  border-radius: 0;
+  border-radius: 25px;
   padding: 13px 28px;
-  transition: all 0.2s ease;
-  max-width: 100%;
+  width: 50%;
+    position: center;
 }
-.btn-small {
-  padding: 10px 24px;
+.btn-time {
+
+  font-size: 90%;
+  border-radius: 25px;
+  width: 10%;
+    float: right;
+    margin-left: 10%;
+  color: #fff;
+  background: rgb(193,188,255);
+    background: linear-gradient(45deg, rgba(193,188,255,1) 0%, rgba(145,242,255,1) 100%);
 }
 .btn-primary {
   color: #fff;
-  background-color: #4c9aff;
-  border: 2px solid #4c9aff;
   font-size: 90%;
   font-weight: 600;
+  width: 46%;
+
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .btn-primary:active,
-.btn-primary:hover {
-  color: #4c9aff;
-  background-color: transparent;
-  border: 2px solid #4c9aff;
+.btn-primary {
+  color: #fff;
+  background: rgb(193,188,255);
+    background: linear-gradient(45deg, rgba(193,188,255,1) 0%, rgba(145,242,255,1) 100%);
+  font-size: 90%;
+  font-weight: 600;
 }
         /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */
         body.status,
@@ -91,15 +99,8 @@
         div[id^="subscribe-modal"] .modal-header .close,
         .grouped-item-label,
         #uptime-tooltip .tooltip-box .tooltip-content .related-events .related-event a.related-event-link {
-            color:#2E3338;
+            color: black; /*text header*/
         }
-
-        .layout-content.status.status-index .components-statuses .component-container .name {
-            color:#2E3338;
-            color:rgba(46,51,56,.8);
-        }
-
-
 
 
         /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */
@@ -110,10 +111,8 @@
         .layout-content.status.status-full-history .history-footer .pagination a.disabled,
         .layout-content.status.status-full-history .history-nav a,
         #uptime-tooltip .tooltip-box .tooltip-content .related-events #related-event-header {
-            color:#72767D;
+            color:#72767d;
         }
-
-
 
 
         /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */
@@ -162,150 +161,6 @@
             border-color: rgba(224,224,224,0.0);
         }
 
-
-
-
-        /* CSS REDS */ /* CSS REDS */ /* CSS REDS */ /* CSS REDS */ /* CSS REDS */ /* CSS REDS */ /* CSS REDS */
-        .layout-content.status.status-index .status-day .update-title.impact-critical a,
-        .layout-content.status.status-index .status-day .update-title.impact-critical a:hover,
-        .layout-content.status.status-index .page-status.status-critical,
-        .layout-content.status.status-index .unresolved-incident.impact-critical .incident-title,
-        .flat-button.background-red {
-            background-color:#ED4245;
-        }
-
-        .layout-content.status-index .components-statuses .component-container.status-red:after,
-        .layout-content.status-full-history .month .incident-container .impact-critical,
-        .layout-content.status-incident .incident-name.impact-critical,
-        .layout-content.status.status-index .incidents-list .incident-title.impact-critical a,
-        .status-red .icon-indicator,
-        .incident-history .impact-critical,
-        .components-container .component-inner-container.status-red .component-status,
-        .components-container .component-inner-container.status-red .icon-indicator {
-            color:#ED4245;
-        }
-
-        .layout-content.status.status-index .unresolved-incident.impact-critical .updates {
-            border-color:#ED4245;
-        }
-
-
-
-
-        /* CSS ORANGES */ /* CSS ORANGES */ /* CSS ORANGES */ /* CSS ORANGES */ /* CSS ORANGES */ /* CSS ORANGES */
-        .layout-content.status.status-index .status-day .update-title.impact-major a,
-        .layout-content.status.status-index .status-day .update-title.impact-major a:hover,
-        .layout-content.status.status-index .page-status.status-major,
-        .layout-content.status.status-index .unresolved-incident.impact-major .incident-title {
-            background-color:#F26522;
-        }
-
-        .layout-content.status-index .components-statuses .component-container.status-orange:after,
-        .layout-content.status-full-history .month .incident-container .impact-major,
-        .layout-content.status-incident .incident-name.impact-major,
-        .layout-content.status.status-index .incidents-list .incident-title.impact-major a,
-        .status-orange .icon-indicator,
-        .incident-history .impact-major,
-        .components-container .component-inner-container.status-orange .component-status,
-        .components-container .component-inner-container.status-orange .icon-indicator {
-            color:#F26522;
-        }
-
-        .layout-content.status.status-index .unresolved-incident.impact-major .updates {
-            border-color:#F26522;
-        }
-
-
-
-
-        /* CSS YELLOWS */ /* CSS YELLOWS */ /* CSS YELLOWS */ /* CSS YELLOWS */ /* CSS YELLOWS */ /* CSS YELLOWS */
-        .layout-content.status.status-index .status-day .update-title.impact-minor a,
-        .layout-content.status.status-index .status-day .update-title.impact-minor a:hover,
-        .layout-content.status.status-index .page-status.status-minor,
-        .layout-content.status.status-index .unresolved-incident.impact-minor .incident-title,
-        .layout-content.status.status-index .scheduled-incidents-container .tab {
-            background-color:#CB8615;
-        }
-
-        .layout-content.status-index .components-statuses .component-container.status-yellow:after,
-        .layout-content.status-full-history .month .incident-container .impact-minor,
-        .layout-content.status-incident .incident-name.impact-minor,
-        .layout-content.status.status-index .incidents-list .incident-title.impact-minor a,
-        .status-yellow .icon-indicator,
-        .incident-history .impact-minor,
-        .components-container .component-inner-container.status-yellow .component-status,
-        .components-container .component-inner-container.status-yellow .icon-indicator,
-        .layout-content.status.manage-subscriptions .confirmation-infobox .fa {
-            color:#CB8615;
-        }
-
-        .layout-content.status.status-index .unresolved-incident.impact-minor .updates,
-        .layout-content.status.status-index .scheduled-incidents-container {
-            border-color:#CB8615;
-        }
-
-
-
-
-        /* CSS BLUES */ /* CSS BLUES */ /* CSS BLUES */ /* CSS BLUES */ /* CSS BLUES */ /* CSS BLUES */
-        .layout-content.status.status-index .status-day .update-title.impact-maintenance a,
-        .layout-content.status.status-index .status-day .update-title.impact-maintenance a:hover,
-        .layout-content.status.status-index .page-status.status-maintenance,
-        .layout-content.status.status-index .unresolved-incident.impact-maintenance .incident-title,
-        .layout-content.status.status-index .scheduled-incidents-container .tab {
-            background-color:#3498DB;
-        }
-
-        .layout-content.status-index .components-statuses .component-container.status-blue:after,
-        .layout-content.status-full-history .month .incident-container .impact-maintenance,
-        .layout-content.status-incident .incident-name.impact-maintenance,
-        .layout-content.status.status-index .incidents-list .incident-title.impact-maintenance a,
-        .status-blue .icon-indicator,
-        .incident-history .impact-maintenance,
-        .components-container .component-inner-container.status-blue .component-status,
-        .components-container .component-inner-container.status-blue .icon-indicator {
-            color:#3498DB;
-        }
-
-        .layout-content.status.status-index .unresolved-incident.impact-maintenance .updates,
-        .layout-content.status.status-index .scheduled-incidents-container {
-            border-color:#3498DB;
-        }
-
-
-
-
-        /* CSS GREENS */ /* CSS GREENS */ /* CSS GREENS */ /* CSS GREENS */ /* CSS GREENS */ /* CSS GREENS */ /* CSS GREENS */
-        .layout-content.status.status-index .page-status.status-none {
-            background-color:#3BA55C;
-        }
-        .layout-content.status-index .components-statuses .component-container.status-green:after,
-        .status-green .icon-indicator,
-        .components-container .component-inner-container.status-green .component-status,
-        .components-container .component-inner-container.status-green .icon-indicator {
-            color:#3BA55C;
-        }
-
-
-
-        /* CSS LINK COLOR */  /* CSS LINK COLOR */  /* CSS LINK COLOR */  /* CSS LINK COLOR */  /* CSS LINK COLOR */  /* CSS LINK COLOR */
-        a,
-        a:hover,
-        .layout-content.status-index .page-footer span a:hover,
-        .layout-content.status-index .timeframes-container .timeframe:not(.active):hover,
-        .layout-content.status-incident .subheader a:hover {
-            color:#5865F2;
-        }
-
-        .flat-button,
-        .masthead .updates-dropdown-container .show-updates-dropdown,
-        .layout-content.status-full-history .show-filter.open  {
-            background-color:#5865F2;
-        }
-
-
-
-
         /* CUSTOM COLOR OVERRIDES FOR UPTIME SHOWCASE */
         .components-section .components-uptime-link {
             color: #72767d;
@@ -336,6 +191,13 @@
             float:right;
             width: 70%;
             height: 100%;
+        }
+        .timeframes-container {
+            height: 100%;
+        }
+
+        .page-status {
+            background: #72767d;
         }
 
     </style>
@@ -369,23 +231,24 @@
 
         <div class="masthead has-logo">
             <div class="logo-container">
-                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/logo-full.png"
-                                                   width="500"/></a>
+                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/logo-full.png"/></a>
             </div>
 
         </div>
+
 
     </div>
     <!-- this is outside of the .container so that the cover photo can go full width on mobile -->
 <div class="wrapper">
     <div class="services" style="margin-left:50px;margin-right:25px; ">
+        <div class="CAT">
+            <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/cat.png"/></a>
+        </div>
         <div class="page-status status-none">
           <span class="status font-large">
             Service List
           </span>
-
         </div>
-
         <div class="menu-container" id="menu-container">
             <!-- <input id="pushMe" type="button" value="Add New Service" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" > -->
             <div class="timeframes-container">
@@ -419,215 +282,19 @@
             <div class="metrics-container">
                 <div class="metric border-color">
                     <div class="metric-meta font-large">
-                <a href="#" class="timeframe color-secondary font-regular border-color" data-js-hook="data-time-period-toggle" data-time-period="month">Month</a>
-                <a href="#" class="timeframe color-secondary font-regular border-color" data-js-hook="data-time-period-toggle" data-time-period="week"><span class="translation_missing" title="translation missing: en.week">Week</span></a>
-                <a href="#" class="timeframe active color-secondary font-regular border-color" data-js-hook="data-time-period-toggle" data-time-period="day">Day</a>
 
                         <div class="metric-name color-primary">
                             Serivice Response Time
                         </div>
+                        <button class="btn-time" type="submit" class="btn" onclick="closeForm()">Week</button>
+                        <button class="btn-time" type="submit" class="btn" onclick="showAddEmail()">Day</button>
+
+                        </div>
 
                         <div class="metrics-container" id="MyDiv">
-
-                        </div>
-                    </div>
-                    <div class="metrics-display-graph">
-                        <div class="graph-container" id="metrics-display-graph-container-5k2rt9f7pmny" data-js-hook= "metrics-display-graph-container-5k2rt9f7pmny"></div>
                     </div>
                 </div>
             </div>
-
-
-        <div class="incidents-list format-expanded">
-            <a class="font-largest no-link" id="past-incidents" href="#past-incidents">Past Incidents</a>
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Apr <var data-var="date"> 4</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported today.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Apr <var data-var="date"> 3</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Apr <var data-var="date"> 2</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Apr <var data-var="date"> 1</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">31</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular ">
-                <div class="date border-color font-large">Mar <var data-var="date">30</var>, <var data-var="year">2022</var></div>
-                <div class="incident-container">
-                    <div class="incident-title impact-none font-large">
-                        <a href="/incidents/12pdcqxxtc7g">API Availability Issues</a>
-                    </div>
-
-                    <div class="updates-container">
-                        <!-- postmortem -->
-
-                        <!-- incident updates -->
-                        <div class="update font-regular resolved">
-                            <strong>Resolved</strong> -
-                            Service should be recovered now. We're aware of the root cause, and the issue should not recur.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>30</var>, <var data-var='time'>14:35</var> PDT
-                            </small>
-                        </div>
-                        <div class="update font-regular investigating">
-                            <strong>Investigating</strong> -
-                            We're currently investigating message send / connection difficulties.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>30</var>, <var data-var='time'>14:24</var> PDT
-                            </small>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">29</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">28</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">27</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">26</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">25</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular ">
-                <div class="date border-color font-large">Mar <var data-var="date">24</var>, <var data-var="year">2022</var></div>
-                <div class="incident-container">
-                    <div class="incident-title impact-none font-large">
-                        <a href="/incidents/45xsp0xvb8q8">Member Lists In Very Large Guilds</a>
-                    </div>
-
-                    <div class="updates-container">
-                        <!-- postmortem -->
-
-                        <!-- incident updates -->
-                        <div class="update font-regular resolved">
-                            <strong>Resolved</strong> -
-                            We've identified the issue and applied a fix. Member lists should be back to normal.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>24</var>, <var data-var='time'>23:34</var> PDT
-                            </small>
-                        </div>
-                        <div class="update font-regular investigating">
-                            <strong>Investigating</strong> -
-                            We're investigating an issue affecting member lists in very large guilds (> 75,000 members). The sidebar of online members may be degraded or missing.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>24</var>, <var data-var='time'>22:16</var> PDT
-                            </small>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">23</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular no-incidents">
-                <div class="date border-color font-large">Mar <var data-var="date">22</var>, <var data-var="year">2022</var></div>
-                <p class="color-secondary">No incidents reported.</p>
-            </div>
-
-
-            <div class="status-day font-regular ">
-                <div class="date border-color font-large">Mar <var data-var="date">21</var>, <var data-var="year">2022</var></div>
-                <div class="incident-container">
-                    <div class="incident-title impact-major font-large">
-                        <a href="/incidents/hf9g6054hg20">Guild Updates Failing</a>
-                    </div>
-
-                    <div class="updates-container">
-                        <!-- postmortem -->
-
-                        <!-- incident updates -->
-                        <div class="update font-regular resolved">
-                            <strong>Resolved</strong> -
-                            This incident has been resolved.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>21</var>, <var data-var='time'>15:40</var> PDT
-                            </small>
-                        </div>
-                        <div class="update font-regular identified">
-                            <strong>Identified</strong> -
-                            A software update resulted in changes to non-discoverable servers to fail. We are rolling back the change now and expect to resolve this in the next 45 minutes.
-
-                            <br>
-
-                            <small>
-                                Mar <var data-var='date'>21</var>, <var data-var='time'>15:11</var> PDT
-                            </small>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
 
         <div class="page-footer border-color font-small">
             <a href="/history" class="history-footer-link"><span style="font-family:arial">&larr;</span> Incident History</a>
@@ -643,7 +310,7 @@
 <div class="loginPopup">
       <div class="formPopup" id="popupForm">
         <form class="formContainer" id="popupForm2" onsubmit="return blockGet(event)">
-          <h2>Enter your email address</h2>
+          <h3>Enter your email address</h3>
           <input type="text" id="email" placeholder="Your Email" name="email" required>
         <button class="btn btn-primary btn-block text-uppercase" type="submit" class="btn" onclick="closeForm()">Close</button>
           <button class="btn btn-primary btn-block text-uppercase" type="submit" class="btn" onclick="showAddEmail()">Sign to services</button>

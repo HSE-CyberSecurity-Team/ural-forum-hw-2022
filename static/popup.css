@@ -22,16 +22,17 @@
       .formPopup {
         display: none;
         position: fixed;
-        left: 45%;
-        top: 5%;
+        left: 50%;
+        top: 25%;
         transform: translate(-50%, 5%);
-        border: 3px solid #999999;
+        border-radius: 25px;
+        border: 1px solid #999999;
+        background: white;
         z-index: 9;
       }
       .formContainer {
-        max-width: 300px;
+        width: 300px;
         padding: 20px;
-        background-color: #fff;
       }
       .formContainer input[type=text],
       .formContainer input[type=password] {

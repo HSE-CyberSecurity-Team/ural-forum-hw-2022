@@ -268,7 +268,7 @@ function doGraph(points, name){
     var trace1 = {
       x: keys,
       y: values,
-      type: 'scatter'
+      type: 'scatter',
     };
 
     // var trace2 = {
