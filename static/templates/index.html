@@ -321,8 +321,8 @@
                 <div class="metric border-color">
                     <div class="metric-meta font-large">
 
-                        <div class="metric-name color-primary">
-                            Serivice Response Time
+                        <div class="metric-name color-primary" id="uptime">
+                            No info yet
                         </div>
                         <button class="btn-time" type="submit" class="btn" onclick="get_health(app=currentApp, period='week')">Week</button>
                         <button class="btn-time" type="submit" class="btn" onclick="get_health(app=currentApp, period='day')">Day</button>
@@ -333,10 +333,7 @@
                     </div>
                 </div>
             </div>
-            <div class="SPACE">
-                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/space.png"/></a>
-            </div>
-             <div class="metrics-container">
+            <div class="metrics-container">
                 <div class="metric border-color">
                     <div class="metric-meta font-large">
 
@@ -346,10 +343,17 @@
 
                     </div>
                         <div class="metrics-info">
-                            <label id="MyData"></label>
+
+                            <p><label id="latestDateTime"></label></p>
+                            <p><label id="latestResponseTime"></label></p>
+                            <p><label id="latestStatusCode"></label></p>
                         </div>
                 </div>
             </div>
+            <div class="SPACE">
+                <a href="https://github.com/HSE-CyberSecurity-Team"><img src="static/space.png"/></a>
+            </div>
+
 
         <div class="page-footer border-color font-small">
             <a href="/history" class="history-footer-link"><span style="font-family:arial">&larr;</span> Incident History</a>

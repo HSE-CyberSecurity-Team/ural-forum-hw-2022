@@ -3,8 +3,9 @@
 //   ev.preventDefault();
 //   alert('invalid input data')
 // };
-
-
+function format_time(s) {
+  return new Date(s * 1e3).toISOString().slice(0, -5);
+}
 var servicesAmount = 0;
 var currentApp = ""
 function service_elems(id, d) {
@@ -112,7 +113,8 @@ function get_health(app=currentApp, period){
             success: function (d) {
                 // console.log(d)
                 // alert(JSON.stringify(d));
-                alert("Up time is " + d[1] * 100 + "%")
+                // alert("Up time is " + d[1] * 100 + "%")
+                document.getElementById("uptime").innerHTML = "Uptime is " + (d[1] * 100).toFixed(2) + "%"
                 doGraph(d[0], app)
             },
             error: function (e) {
@@ -127,7 +129,8 @@ function get_health(app=currentApp, period){
             url: 'http://127.0.0.1:8000/day_health/' + app,
             contentType: "application/json; charset=utf-8",
             success: function (d) {
-                alert("Up time is " + d[1] * 100 + "%")
+                // alert("Up time is " + d[1] * 100 + "%")
+                document.getElementById("uptime").innerHTML = "Uptime is " + (d[1] * 100).toFixed(2) + "%"
                 doGraph(d[0], app)
             },
             error: function (e) {
@@ -144,8 +147,11 @@ function get_health(app=currentApp, period){
                 // alert("Up time is " + d[1] * 100 + "%")
                 // doGraph(d[0], app)
                 // alert(d)
-                var latest_data = (JSON.stringify(d));
-                document.getElementById("MyData").innerHTML=latest_data;
+                // var latest_data = (JSON.stringify(d));
+                // var
+                document.getElementById("latestDateTime").innerHTML= "Time: " + format_time(parseInt(d['timestamp']));
+                document.getElementById("latestResponseTime").innerHTML= "Response Time: " + d['response_time'];
+                document.getElementById("latestStatusCode").innerHTML= "Status Code: " + d['status'];
 
             },
             error: function (e) {
@@ -210,7 +216,7 @@ function openForm() {
             }
         },
         error: function (e) {
-            alert('lol')
+            alert('error')
         }
 
     })
@@ -287,7 +293,7 @@ function addNewService(clicked_id){
             data: '{"name": "' + name + '", "url" : "' + url + '", "active" : "true"}',
             success: function (data) {
 
-                alert(data);
+                // alert(data);
                 if (data === "app already exists"){
                     currentApp = name;
                     get_health(app=name, period="week")
