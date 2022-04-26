@@ -66,7 +66,7 @@ function get_apps(){
     $.ajax
     ({
         type: "GET",
-        url: 'http://127.0.0.1:8000/app_lists',
+        url: '/app_lists',
         contentType:"application/json; charset=utf-8",
         // headers: {"Access-Control-Allow-Origin":"*"},
         // dataType: 'json',
@@ -100,7 +100,7 @@ function get_health(app=currentApp, period){
         $.ajax
         ({
             type: "GET",
-            url: 'http://127.0.0.1:8000/week_health/' + app,
+            url: '/week_health/' + app,
             contentType: "application/json; charset=utf-8",
             // headers: {"Access-Control-Allow-Origin":"*"},
             // dataType: 'json',
@@ -123,7 +123,7 @@ function get_health(app=currentApp, period){
         $.ajax
         ({
             type: "GET",
-            url: 'http://127.0.0.1:8000/day_health/' + app,
+            url: '/day_health/' + app,
             contentType: "application/json; charset=utf-8",
             success: function (d) {
                 // alert("Up time is " + d[1] * 100 + "%")
@@ -138,7 +138,7 @@ function get_health(app=currentApp, period){
     $.ajax
         ({
             type: "GET",
-            url: 'http://127.0.0.1:8000/latest/' + app,
+            url: '/latest/' + app,
             contentType: "application/json; charset=utf-8",
             success: function (d) {
                 // alert("Up time is " + d[1] * 100 + "%")
@@ -195,7 +195,7 @@ function openForm() {
         $.ajax
         ({
             type: "GET",
-            url: 'http://127.0.0.1:8000/app_lists',
+            url: '/app_lists',
             contentType: "application/json; charset=utf-8",
             success: function (d) {
                 servicesAmount = 0;
@@ -237,7 +237,7 @@ function showAddEmail(){
     $.ajax
         ({
             type: "POST",
-            url: 'http://127.0.0.1:8000/email',
+            url: '/email',
             contentType:"application/json; charset=utf-8",
             // headers: {"Access-Control-Allow-Origin":"*"},
             dataType: 'json',
@@ -273,7 +273,7 @@ function addNewService(clicked_id){
         $.ajax
         ({
             type: "POST",
-            url: 'http://127.0.0.1:8000/add',
+            url: '/add',
             contentType:"application/json; charset=utf-8",
             // headers: {"Access-Control-Allow-Origin":"*"},
             dataType: 'json',
