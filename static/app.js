@@ -39,19 +39,15 @@ function service_elems(id, d) {
             url.setAttribute("placeholder", "service_url_"+id);
 
             // Create a button to show statistics
-
             var button = document.createElement("button");
             button.setAttribute("name", "button_"+id);
-            button.setAttribute("placeholder", "update")
             button.setAttribute("id", String(id));
 
             button.innerHTML='<i class="fa fa-trash-o"></i>'
             button.class="buttons";
             button.setAttribute("onclick", "addNewService(this.id)")
-            // s.setAttribute("value", "Submit");
 
             var linebreak = document.createElement("br");
-            // s.setAttribute("value", "Submit");
 
             form.append(name);
             form.append(url);

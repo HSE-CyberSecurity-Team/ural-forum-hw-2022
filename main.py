@@ -295,9 +295,9 @@ async def get_statuses() -> None:
     return
 
 
-@app.on_event("startup")
-@repeat_every(seconds=60 * 60 * 24)  # 1 day
-# @app.get('/send-mail')
+# @app.on_event("startup")
+# @repeat_every(seconds=60 * 60 * 24)  # 1 day
+@app.get('/send-mail')
 async def send_emails() -> None:
     db = client['ural_data']
     collection_emails = db['emails']

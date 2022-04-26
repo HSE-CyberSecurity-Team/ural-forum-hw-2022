@@ -26,16 +26,15 @@
 
     <script type="text/javascript" src="static/app.js"></script>
 
-    <!-- Le styles -->
-    <link rel="stylesheet" media="screen" href="static/0.763ab44e660250f88ee6.css" />
+
+
+    <!-- custom css -->
+    <link rel="stylesheet" type="text/css" href="static/external20211005-40-12abxbc.css">
     <link rel="stylesheet" media="all" href="static/popup.css" />
     <link rel="stylesheet" media="all" href="static/status_manifest-08a0ce5b8cccd461963af5bf415c8d59b4d24d4fe74d8f6d3661643cb959f919.css" />
 
     <script src="static/jquery-3.5.1.min-729e416557a365062a8a20f0562f18aa171da57298005d392312670c706c68de.js"></script>
 
-    <script>
-        window.pageColorData = {"blue":"#3498DB","border":"#E0E0E0","body_background":"#FFFFFF","font":"#2E3338","graph":"#5865F2","green":"#3BA55C","light_font":"#72767D","link":"#5865F2","orange":"#F26522","red":"#ED4245","yellow":"#CB8615","no_data":"#B3BAC5"};
-    </script>
     <style>
         /* BODY BACKGROUND */ /* BODY BACKGROUND */ /* BODY BACKGROUND */ /* BODY BACKGROUND */ /* BODY BACKGROUND */
         body,
@@ -55,13 +54,14 @@
   width: 50%;
     position: center;
 }
+
 .btn-time {
 
   font-size: 90%;
   border-radius: 25px;
   width: 10%;
     float: right;
-    margin-left: 10%;
+    margin-left: 4%;
   color: #fff;
   background: rgb(193,188,255);
     background: linear-gradient(45deg, rgba(193,188,255,1) 0%, rgba(145,242,255,1) 100%);
@@ -83,36 +83,6 @@
   font-size: 90%;
   font-weight: 600;
 }
-        /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */ /* PRIMARY FONT COLOR */
-        body.status,
-        .color-primary,
-        .color-primary:hover,
-        .layout-content.status-index .status-day .update-title.impact-none a,
-        .layout-content.status-index .status-day .update-title.impact-none a:hover,
-        .layout-content.status-index .timeframes-container .timeframe.active,
-        .layout-content.status-full-history .month .incident-container .impact-none,
-        .layout-content.status.status-index .incidents-list .incident-title.impact-none a,
-        .incident-history .impact-none,
-        .layout-content.status .grouped-items-selector.inline .grouped-item.active,
-        .layout-content.status.status-full-history .history-nav a.current,
-        .layout-content.status.status-full-history .history-nav a:not(.current):hover,
-        div[id^="subscribe-modal"] .modal-header .close,
-        .grouped-item-label,
-        #uptime-tooltip .tooltip-box .tooltip-content .related-events .related-event a.related-event-link {
-            color: black; /*text header*/
-        }
-
-
-        /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */ /* SECONDARY FONT COLOR */
-        small,
-        .layout-content.status .table-row .date,
-        .color-secondary,
-        .layout-content.status .grouped-items-selector.inline .grouped-item,
-        .layout-content.status.status-full-history .history-footer .pagination a.disabled,
-        .layout-content.status.status-full-history .history-nav a,
-        #uptime-tooltip .tooltip-box .tooltip-content .related-events #related-event-header {
-            color:#72767d;
-        }
 
 
         /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */  /* BORDER COLOR */
@@ -125,136 +95,35 @@
             border-color:#E0E0E0;
         }
 
-        div[id^="subscribe-modal"] .modal-footer,
-        .markdown-display table td {
-            border-top-color:#E0E0E0;
-        }
-
-        div[id^="subscribe-modal"] .modal-header .close:hover {
-            color:#E0E0E0;
-        }
-
-        .markdown-display table td + td, .markdown-display table th + th {
-            border-left-color:#E0E0E0;
-        }
-
-        div[id^="subscribe-modal"] .modal-header,
-        #uptime-tooltip .pointer-container .pointer-larger {
-            border-bottom-color:#E0E0E0;
-        }
-
-        #uptime-tooltip .tooltip-box .outage-field {
-            /*
-              Generate the background-color for the outage-field from the css_body_background_color and css_border_color.
-
-              For the default background (#ffffff) and default css_border_color (#e0e0e0), use the luminosity of the default background with a magic number to arrive at
-              the original outage-field background color (#f4f5f7). I used the formula Target Color = Color * alpha + Background * (1 - alpha) to find the magic number of ~0.08.
-
-              For darker css_body_background_color, luminosity values are lower so alpha trends toward becoming transparent (thus outage-field background becomes same as css_body_background_color).
-            */
-            background-color: rgba(224,224,224,0.31);
-
-            /*
-              outage-field border-color alpha is inverse to the luminosity of css_body_background_color.
-              That is to say, with a default white background this border is transparent, but on a black background, it's opaque css_border_color.
-            */
-            border-color: rgba(224,224,224,0.0);
-        }
-
-        /* CUSTOM COLOR OVERRIDES FOR UPTIME SHOWCASE */
-        .components-section .components-uptime-link {
-            color: #72767d;
-        }
-
-        .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .legend-item {
-            color: #72767d;
-            opacity: 0.8;
-        }
-        .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .legend-item.light {
-            color: #72767d;
-            opacity: 0.5;
-        }
-        .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .spacer {
-            background: #72767d;
-            opacity: 0.3;
-        }
-
         .wrapper {
             display: flex;
         }
         .services {
             float: left;
-            width: 30%;
+            width: 35%;
             height: 100%;
         }
         .container {
             float:right;
-            width: 70%;
+            width: 55%;
             height: 100%;
         }
         .timeframes-container {
             height: 100%;
+            margin-left: 2px;
+            margin-right: 2px;
+            margin-bottom: 2px;
         }
-
+/*цвет шизы*/
         .page-status {
-            background: #72767d;
+            background: #737373;
         }
-
-
-        .buttons {
-  display: flex;
-  height: 50px;
-  padding: 0;
-  background: #009578;
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  overflow: hidden;
-  font-family: "Quicksand", sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.buttons:hover {
-  background: #008168;
-}
-
-.buttons:active {
-  background: #006e58;
-}
-
-.buttons__text,
-.buttons__icon {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 24px;
-  color: #fff;
-  height: 100%;
-}
-
-.buttons__icon {
-  font-size: 1.5em;
-  background: rgba(0, 0, 0, 0.08);
-}
 
     </style>
 
 
-    <!-- custom css -->
-    <link rel="stylesheet" type="text/css" href="static/external20211005-40-12abxbc.css">
-
     <!-- polyfills -->
     <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
-    <!-- Le HTML5 shim -->
-    <!--[if lt IE 9]>
-    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- injection for static -->
-
-
 
 </head>
 
@@ -290,20 +159,24 @@
         <div class="menu-container" id="menu-container">
             <!-- <input id="pushMe" type="button" value="Add New Service" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" > -->
             <div class="timeframes-container">
-                <div class="service-field" style="width:100%;">
+                <div class="service-field-1" style="margin-right:50px;">
                     <!-- <input id="text1" type="text" style="width:100%; " placeholder="Input a link to the service (e.g. https://www.google.com/)"> -->
                 </div>
-                <!-- <a href="#" class="timeframe color-secondary font-regular border-color" data-js-hook="data-time-period-toggle" data-time-period="month">Add New Service</a>-->
-                <input id="pushMe2" type="button" value="Add" style="width:100%;color:white;background-color:#4c9aff;visibility:hidden;" onclick="addService()">
+                <div class="service-field-2" style="margin-right:50px;">
+                    <!-- <input id="text1" type="text" style="width:100%; " placeholder="Input a link to the service (e.g. https://www.google.com/)"> -->
+                </div>
+                <div class="service-field-3" style="margin-right:50px;">
+                    <!-- <input id="text1" type="text" style="width:100%; " placeholder="Input a link to the service (e.g. https://www.google.com/)"> -->
+                </div>
             </div>
 
 <!--            <a-->
 <!--              class="btn btn-primary btn-block text-uppercase mb-3" style="margin-bottom:10px; width:100%;color:white;background-color:#4c9aff;" onclick="showAddMenu()" >Add new Service</a>-->
             <button class="btn btn-primary btn-block text-uppercase" onclick="showAddMenu()">
-              Add new Service
+              Add New
             </button>
             <button class="btn btn-primary btn-block text-uppercase" onclick="openForm()">
-              Select and follow services
+              Subscribe
             </button>
         </div>
     </div>
