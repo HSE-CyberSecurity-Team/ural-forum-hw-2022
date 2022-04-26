@@ -233,15 +233,23 @@ async def add_item(service: Service, response: Response):
 
     db = client['ural_data']
     collection = db['apps']
+    collection_app = db[service.name]
 
+    if service.active:
+        res = await response_time_code(service.url)
+        collection_app.insert_one({"timestamp": int(time.time()), "response_time": res[0], "status": res[1]})
     # service["active"] = True
     # d = dict(service)
     # return await collection.count_documents({"name": service.name})
     # return service.__dict__
     if await collection.count_documents({"name": service.name}) == 0:
         collection.insert_one(service.__dict__)
+
+
+
         return service.__dict__
     else:
+
         return "app already exists"
 
 
