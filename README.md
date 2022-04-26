@@ -8,7 +8,7 @@ Beta-версия <br> <br>
 ![ Image 1](/image-15.PNG) <br> <br>
 
 Cхема интеграций и запросов <br> <br>
-![ Image 1](/image-9.PNG)
+![ Image 1](/image-16.PNG)
 
 Docs <br> <br>
 ![ Image 1](/image-9.PNG)
