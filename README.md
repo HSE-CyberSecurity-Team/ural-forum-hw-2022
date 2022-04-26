@@ -5,13 +5,13 @@
 # Cхема разработки
 ---
 Beta-версия <br> <br>
-![ Image 1](/image-15.png) <br> <br>
+![ Image 1](/image-15.PNG) <br> <br>
 
 Cхема интеграций и запросов <br> <br>
-![ Image 1](/image-9.png)
+![ Image 1](/image-9.PNG)
 
 Docs <br> <br>
-![ Image 1](/image-9.png)
+![ Image 1](/image-9.PNG)
 
 # Реализация
 ---
