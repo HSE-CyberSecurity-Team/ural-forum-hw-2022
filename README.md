@@ -7,14 +7,14 @@
 Beta-версия <br> <br>
 ![ Image 1](/image-15.PNG) <br> <br>
 
-Cхема интеграций и запросов <br> <br>
 ![ Image 1](/image-16.PNG)
-
-Docs <br> <br>
-![ Image 1](/image-9.PNG)
 
 # Реализация
 ---
+
+Cхема интеграций и запросов <br> <br>
+![ Image 1](/image-9.PNG) <br> <br>
+
 swagger с api методами <br> <br>
 ![image](https://user-images.githubusercontent.com/33466049/164570747-c6d2ea94-d9b8-41c9-abf7-2ec65e0c5f09.png)
 
